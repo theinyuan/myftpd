@@ -7,8 +7,9 @@
  */
 
 #include <sys/types.h>
-#include <netinet/in.h>
+#include <sys/stat.h>
 #include <sys/socket.h>
+#include <netinet/in.h>
 #include <netdb.h>
 #include <string.h>
 #include <stdlib.h>
@@ -18,7 +19,7 @@
 #include "protocol.h"
 
 int daemon_init();
-void startServerProg();
+int startServerProg();
 int initServerProg(int *socketNum);
 
 int main()
@@ -37,34 +38,47 @@ int daemon_init()
     }
     else if (pid != 0)
     {
-        exit(OK); // parent goes bye-bye
+        exit(OK);
     }
-    // child continues
-    setsid();   // become session leader
-    chdir("/"); // change working directory
-    umask(0);   // clear our file mode creation mask
+
+    setsid();
+    chdir("/");
+    umask(0);
     return OK;
 }
 
 void currentTime(char *timeNow)
 {
-    int hours,minutes,seconds,day,month,year;
-    time_t now = time(NULL);
+    int hours, minutes, seconds, day, month, year;
+    time_t now;
+    time(&now);
     struct tm *local = localtime(&now);
-    strftime(timeNow,sizeof(timeNow),"%Y:%m:%d:%h:%M:%S",&local);
+    strftime(timeNow, MAX_TIME, "%Y:%m:%d %H:%M:%S", local);
 }
 
-void startServerProg()
+int startServerProg()
 {
     int socketStatus, messageSize, serverSocket, cliConnSocket;
     currentTime(timeNow);
-    accessLogFile = fopen(accessLog,"w");
-    errorLogFile = fopen(errorLog,"w");
+    accessLogFile = fopen(accessLog, "w");
+    errorLogFile = fopen(errorLog, "w");
 
-    if(daemon_init() < 0)
+    if (accessLogFile == NULL)
     {
-
+        printf("Error: can't create log file %s\n", accessLog);
     }
+    if (errorLogFile == NULL)
+    {
+        printf("Error: can't create log file %s\n", errorLog);
+    }
+
+    if (daemon_init() < 0)
+    {
+        printf("Unable to convert into daemon\n"),exit(4);
+    }
+
+    fprintf(accessLogFile,"%s server pid = %d\n",timeNow,getpid());
+    fflush(accessLogFile);
 
     printf("Initialise server FTP program...\n");
     socketStatus = initServerProg(&serverSocket);
@@ -81,7 +95,7 @@ void startServerProg()
         perror("Error in accepting connection from clients: ");
         printf("Program is terminating...\n");
         close(serverSocket);
-        return (ACCEPT_FAILED);
+        return ACCEPT_FAILED;
     }
     return OK;
 }

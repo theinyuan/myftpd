@@ -24,6 +24,8 @@
 #define SERVER_FTP_PORT 8000
 #define serverQueue 100
 
+#define MAX_TIME 256
+
 char userCmd[1024];  /* user typed ftp command line received from client */
 char cmd[1024];      /* ftp command (without argument) extracted from userCmd */
 char argument[1024]; /* argument (without ftp command) extracted from userCmd */
@@ -32,7 +34,7 @@ char *space = " ";
 char buffer[4096];
 char *accessLog = "access_log.txt";
 char *errorLog = "error_log.txt";
-char *timeNow = NULL;
+char timeNow[MAX_TIME] = "";
 
 FILE *accessLogFile;
 FILE *errorLogFile;
