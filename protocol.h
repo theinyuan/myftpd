@@ -8,9 +8,6 @@
  *  Protocol used: TCP
  */
 
-#include <stdio.h>
-#include <time.h>
-
 #define FORK_ERROR 1
 #define OK 0
 #define INVALID_HOST_NAME -1
