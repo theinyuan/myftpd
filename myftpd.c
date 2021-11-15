@@ -55,8 +55,8 @@ int startServerProg()
 {
     int socketStatus, messageSize, serverSocket, cliConnSocket;
     currentTime(programTime);
-    svrAccessLog = fopen(accessLog, "w");
-    svrErrorLog = fopen(errorLog, "w");
+    svrAccessLog = fopen(accessLog, "a");
+    svrErrorLog = fopen(errorLog, "a");
 
     if (svrAccessLog == NULL)
     {
