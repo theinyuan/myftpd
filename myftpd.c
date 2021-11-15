@@ -17,14 +17,9 @@
 #include <time.h>
 #include "protocol.h"
 
-<<<<<<< HEAD
 int daemon_init();
 void startServerProg();
 int initServerProg(int *socketNum);
-=======
-// #define SERV_INET_NO
-// #define SERV_TCP_PORT 
->>>>>>> b2abf486455391993fa3f2fef51f788581ac6871
 
 int main()
 {
