@@ -9,6 +9,7 @@
 int main()
 {
     printf("hello world!\n");
+    printf("testing commit\n");
 
     return 0;
 }
