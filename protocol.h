@@ -26,15 +26,6 @@
 
 #define MAX_TIME 256
 
-/*
-char userCmd[1024];  //user typed ftp command line received from client
-char cmd[1024];      //ftp command (without argument) extracted from userCmd
-char argument[1024]; //argument (without ftp command) extracted from userCmd
-char replyMsg[4096]; //buffer to send reply message to client
-char *space = " ";
-char buffer[4096];
-*/
-
 FILE *svrAccessLog;
 FILE *svrErrorLog;
 FILE *cliAccessLog;
