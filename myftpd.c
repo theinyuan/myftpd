@@ -22,6 +22,10 @@ int daemon_init();
 int startServerProg();
 int initServerProg(int *socketNum);
 
+char *accessLog = "svr_access_log.txt";
+char *errorLog = "svr_error_log.txt";
+char programTime[MAX_TIME] = "";
+
 int main()
 {
     startServerProg();
@@ -47,27 +51,18 @@ int daemon_init()
     return OK;
 }
 
-void currentTime(char *timeNow)
-{
-    int hours, minutes, seconds, day, month, year;
-    time_t now;
-    time(&now);
-    struct tm *local = localtime(&now);
-    strftime(timeNow, MAX_TIME, "%Y:%m:%d %H:%M:%S", local);
-}
-
 int startServerProg()
 {
     int socketStatus, messageSize, serverSocket, cliConnSocket;
-    currentTime(timeNow);
-    accessLogFile = fopen(accessLog, "w");
-    errorLogFile = fopen(errorLog, "w");
+    currentTime(programTime);
+    svrAccessLog = fopen(accessLog, "w");
+    svrErrorLog = fopen(errorLog, "w");
 
-    if (accessLogFile == NULL)
+    if (svrAccessLog == NULL)
     {
         printf("Error: can't create log file %s\n", accessLog);
     }
-    if (errorLogFile == NULL)
+    if (svrErrorLog == NULL)
     {
         printf("Error: can't create log file %s\n", errorLog);
     }
@@ -77,8 +72,8 @@ int startServerProg()
         printf("Unable to convert into daemon\n"),exit(4);
     }
 
-    fprintf(accessLogFile,"%s server pid = %d\n",timeNow,getpid());
-    fflush(accessLogFile);
+    fprintf(svrAccessLog,"%s server pid = %d\n",programTime,getpid());
+    fflush(svrAccessLog);
 
     printf("Initialise server FTP program...\n");
     socketStatus = initServerProg(&serverSocket);
