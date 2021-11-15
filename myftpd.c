@@ -10,6 +10,9 @@
 #include <sys/types.h>
 #include "protocol.h"
 
+// #define SERV_INET_NO
+// #define SERV_TCP_PORT 
+
 int main()
 {
     // creating daemon process
