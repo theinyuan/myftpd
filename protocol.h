@@ -26,12 +26,4 @@
 
 #define MAX_TIME 256
 
-FILE *svrAccessLog;
-FILE *svrErrorLog;
-FILE *cliAccessLog;
-FILE *cliErrorLog;
-FILE *myfile;
-
-void currentTime(char *timeNow);
-
 #endif
