@@ -8,8 +8,12 @@
  *  Protocol used: TCP
  */
 
-#define FORK_ERROR 1
+#define FILE_ALREADY_EXIST 3
+#define EXCEEDED_ALLOWED_SIZE 2
+#define FILE_NOT_FOUND 1
+
 #define OK 0
+
 #define INVALID_HOST_NAME -1
 #define CREATE_SOCKET_FAILED -2
 #define BIND_FAILED -3
@@ -17,6 +21,7 @@
 #define SEND_FAILED -5
 #define RECEIVE_FAILED -6
 #define ACCEPT_FAILED -7
+#define FORK_ERROR -8
 
 #define SERVER_FTP_PORT 8000
 #define serverQueue 100
