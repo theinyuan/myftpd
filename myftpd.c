@@ -6,13 +6,15 @@
  *  Description: a simple network protocol that can be used to download files from a remote site and to upload files to a remote site, and a client and a server programs that communicate using that protocol.
  */
 
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <errno.h>
 #include <netdb.h>
+#include <signal.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -20,9 +22,11 @@
 #include <time.h>
 #include "protocol.h"
 
+void claim_children();
 int daemon_init();
 int startServerProg(int argumentCount, char *argumentValue[]);
-int initServerProg(int *socketNum);
+int initServerProg(int *socketNum, char *initTime);
+void serve_client(int socketNum, struct sockaddr *addr);
 int svrSendMessage(int socketNum, char *bufMesg, int mesgSize, struct sockaddr *recipient, int recipientLeng, char *sendTime);
 int svrRecvMessage(int socketNum, char *bufMesg, int bufferSize, int *mesgSize, struct sockaddr *sender, int *senderLeng, char *receiveTime);
 void currentTime(char *timeNow);
@@ -36,9 +40,21 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+void claim_children()
+{
+    pid_t pid = 1;
+
+    while (pid > 0)
+    { /* claim as many zombies as we can */
+        pid = waitpid(0, (int *)0, WNOHANG);
+    }
+}
+
 int daemon_init()
 {
     pid_t pid;
+    struct sigaction act;
+
     if ((pid = fork()) < 0)
     {
         perror("fork error");
@@ -52,6 +68,12 @@ int daemon_init()
     setsid();
     chdir("/");
     umask(0);
+
+    act.sa_handler = claim_children; /* use reliable signal */
+    sigemptyset(&act.sa_mask);       /* not to block other signals */
+    act.sa_flags = SA_NOCLDSTOP;     /* not catch stopped children */
+    sigaction(SIGCHLD, (struct sigaction *)&act, (struct sigaction *)0);
+
     return OK;
 }
 
@@ -98,20 +120,23 @@ int startServerProg(int argumentCount, char *argumentValue[])
 
     fprintf(svrAccessLog, "%s server pid = %d\n", programTime, getpid());
     fflush(svrAccessLog);
+    fprintf(svrAccessLog, "%s Initialise server FTP program...\n", programTime);
+    fflush(svrAccessLog);
 
-    printf("Initialise server FTP program...\n");
-    socketStatus = initServerProg(&serverSocket);
+    socketStatus = initServerProg(&serverSocket, programTime);
     if (socketStatus != 0)
     {
         printf("Socket error. This program will be terminated.\n");
         exit(socketStatus);
     }
 
-    printf("Socket created successfully and ready to accept connection from clients.\n");
+    fprintf(svrAccessLog, "%s Socket created successfully and ready to accept connection from clients.\n", programTime);
+    fflush(svrAccessLog);
+
     while (1)
     {
         senderLen = sizeof(sender);
-        struct sockaddr_in *sender_addr = (struct sockaddr_in *)sender;
+        struct sockaddr *sender_addr = (struct sockaddr *)sender;
         cliConnSocket = accept(serverSocket, sender_addr, (socklen_t *)&senderLen);
         if (cliConnSocket < 0)
         {
@@ -140,27 +165,35 @@ int startServerProg(int argumentCount, char *argumentValue[])
 
         do
         {
-            socketStatus = svrRecvMessage(cliConnSocket, mesgFromUser, sizeof(mesgFromUser), &messageSize, sender, &senderLen, programTime);
+            currentTime(programTime);
+            //socketStatus = svrRecvMessage(cliConnSocket, mesgFromUser, sizeof(mesgFromUser), &messageSize, sender, &senderLen, programTime);
+            /*socketStatus = read(cliConnSocket, mesgFromUser, sizeof(mesgFromUser));
             if (socketStatus < 0)
             {
                 printf("Failed to receive messages. Please check again.\n");
                 fprintf(svrErrorLog, "%s Unable to receive message.", programTime);
                 fflush(svrErrorLog);
                 break;
-            }
+            }*/
+            serve_client(cliConnSocket, sender_addr);
         } while (1);
     }
+
+    close(serverSocket);
     return OK;
 }
 
-int initServerProg(int *socketNum)
+int initServerProg(int *socketNum, char *initTime)
 {
     int sock;
     struct sockaddr_in serverAddr;
+    currentTime(initTime);
 
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
         perror("Failed to create socket");
+        fprintf(svrErrorLog, "%s Failed to create socket\n", initTime);
+        fflush(svrErrorLog);
         return (CREATE_SOCKET_FAILED);
     }
 
@@ -173,6 +206,8 @@ int initServerProg(int *socketNum)
     if (bind(sock, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0)
     {
         perror("Unable to bind socket to the server IP");
+        fprintf(svrErrorLog, "%s Unable to bind socket to the server IP\n", initTime);
+        fflush(svrErrorLog);
         close(sock);
         return (BIND_FAILED);
     }
@@ -180,6 +215,29 @@ int initServerProg(int *socketNum)
     listen(sock, serverQueue);
     *socketNum = sock;
     return (OK);
+}
+
+void serve_client(int socketNum, struct sockaddr *addr)
+{
+    int nr, nw;
+    char buf[MAX_BLOCK_SIZE];
+    char serveTime[MAX_TIME] = "";
+    struct sockaddr_in *sendAddr = (struct sockaddr_in *)&addr;
+    struct in_addr visitorIP = sendAddr->sin_addr;
+
+    while (1)
+    {
+        if ((nr = read(socketNum, buf, sizeof(buf))) <= 0)
+            exit(0);
+        currentTime(serveTime);
+        fprintf(svrAccessLog, "%s Message processed successfully - %s.\n", serveTime, inet_ntoa(visitorIP));
+        fflush(svrAccessLog);
+        /* process data */
+        buf[nr] = '\0';
+
+        /* send results to client */
+        nw = write(socketNum, buf, nr);
+    }
 }
 
 int svrSendMessage(int socketNum, char *bufMesg, int mesgSize, struct sockaddr *recipient, int recipientLeng, char *sendTime)
@@ -205,7 +263,7 @@ int svrSendMessage(int socketNum, char *bufMesg, int mesgSize, struct sockaddr *
 
 int svrRecvMessage(int socketNum, char *bufMesg, int bufferSize, int *mesgSize, struct sockaddr *sender, int *senderLeng, char *receiveTime)
 {
-    *senderLeng = sizeof(sender);
+    //*senderLeng = sizeof(sender);
     struct sockaddr_in *sender_addr = (struct sockaddr_in *)sender;
     *mesgSize = recvfrom(socketNum, bufMesg, bufferSize, 0, sender, senderLeng);
 

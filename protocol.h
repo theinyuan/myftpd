@@ -24,10 +24,10 @@
 #define FORK_ERROR -8
 #define PATH_ERROR -9
 
-#define SERVER_FTP_PORT 8000
+#define SERVER_FTP_PORT 40001
 #define serverQueue 100
 
 #define MAX_TIME 256
-#define MAX_BLOCK_SIZE (1024*20)
+#define MAX_BLOCK_SIZE (1024*5)
 
 #endif

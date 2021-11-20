@@ -3,3 +3,84 @@
 2021:11:15 16:54:21 server pid = 1114750
 2021:11:15 18:12:36 server pid = 1118684
 2021:11:15 22:14:22 server pid = 1128709
+2021:11:20 21:59:51 server pid = 1268648
+2021:11:20 22:03:21 server pid = 1269095
+2021:11:20 22:05:15 server pid = 1269258
+2021:11:20 22:10:09 server pid = 1269653
+2021:11:20 22:22:21 server pid = 1270419
+2021:11:20 22:25:23 server pid = 1270659
+2021:11:20 22:25:23 Initialise server FTP program...
+2021:11:20 22:25:50 server pid = 1270780
+2021:11:20 22:25:50 Initialise server FTP program...
+2021:11:20 22:29:31 server pid = 1270939
+2021:11:20 22:29:31 Initialise server FTP program...
+2021:11:20 22:29:31 Socket created successfully and ready to accept connection from clients.
+2021:11:20 22:31:26 server pid = 1271089
+2021:11:20 22:31:26 Initialise server FTP program...
+2021:11:20 22:31:26 Socket created successfully and ready to accept connection from clients.
+2021:11:20 22:41:58 server pid = 1271460
+2021:11:20 22:41:58 Initialise server FTP program...
+2021:11:20 22:41:58 Socket created successfully and ready to accept connection from clients.
+2021:11:20 22:43:56 server pid = 1271594
+2021:11:20 22:43:56 Initialise server FTP program...
+2021:11:20 22:43:56 Socket created successfully and ready to accept connection from clients.
+2021:11:20 22:49:20 server pid = 1271910
+2021:11:20 22:49:20 Initialise server FTP program...
+2021:11:20 22:49:20 Socket created successfully and ready to accept connection from clients.
+2021:11:20 22:49:20 Message processed successfully.
+2021:11:20 22:52:45 server pid = 1272200
+2021:11:20 22:52:45 Initialise server FTP program...
+2021:11:20 22:52:45 Socket created successfully and ready to accept connection from clients.
+2021:11:20 22:55:17 server pid = 1272350
+2021:11:20 22:55:17 Initialise server FTP program...
+2021:11:20 22:55:17 Socket created successfully and ready to accept connection from clients.
+2021:11:20 22:55:25 Message processed successfully.
+2021:11:20 22:58:09 server pid = 1272512
+2021:11:20 22:58:09 Initialise server FTP program...
+2021:11:20 22:58:09 Socket created successfully and ready to accept connection from clients.
+2021:11:20 22:59:54 server pid = 1272669
+2021:11:20 22:59:54 Initialise server FTP program...
+2021:11:20 22:59:54 Socket created successfully and ready to accept connection from clients.
+2021:11:20 23:02:11 server pid = 1272935
+2021:11:20 23:02:11 Initialise server FTP program...
+2021:11:20 23:02:11 Socket created successfully and ready to accept connection from clients.
+2021:11:20 23:04:18 server pid = 1273129
+2021:11:20 23:04:18 Initialise server FTP program...
+2021:11:20 23:04:18 Socket created successfully and ready to accept connection from clients.
+2021:11:20 23:06:14 server pid = 1273314
+2021:11:20 23:06:14 Initialise server FTP program...
+2021:11:20 23:06:14 Socket created successfully and ready to accept connection from clients.
+2021:11:20 23:06:19 Message processed successfully.
+2021:11:20 23:06:19 Message processed successfully.
+2021:11:20 23:06:19 Message processed successfully.
+2021:11:20 23:06:19 Message processed successfully.
+2021:11:20 23:06:19 Message processed successfully.
+2021:11:20 23:07:59 server pid = 1273450
+2021:11:20 23:07:59 Initialise server FTP program...
+2021:11:20 23:07:59 Socket created successfully and ready to accept connection from clients.
+2021:11:20 23:08:07 Message processed successfully.
+2021:11:20 23:08:10 Message processed successfully.
+2021:11:20 23:11:38 server pid = 1273732
+2021:11:20 23:11:38 Initialise server FTP program...
+2021:11:20 23:11:38 Socket created successfully and ready to accept connection from clients.
+2021:11:20 23:15:42 server pid = 1273899
+2021:11:20 23:15:42 Initialise server FTP program...
+2021:11:20 23:15:42 Socket created successfully and ready to accept connection from clients.
+2021:11:20 23:15:49 Message processed successfully - 0.0.0.0.
+2021:11:20 23:15:52 Message processed successfully - 0.0.0.0.
+2021:11:20 23:15:57 Message processed successfully - 0.0.0.0.
+2021:11:20 23:25:32 server pid = 1274403
+2021:11:20 23:25:32 Initialise server FTP program...
+2021:11:20 23:25:32 Socket created successfully and ready to accept connection from clients.
+2021:11:20 23:25:38 Message processed successfully - 0.0.0.0.
+2021:11:20 23:33:10 server pid = 1274704
+2021:11:20 23:33:10 Initialise server FTP program...
+2021:11:20 23:33:10 Socket created successfully and ready to accept connection from clients.
+2021:11:20 23:37:44 server pid = 1274917
+2021:11:20 23:37:44 Initialise server FTP program...
+2021:11:20 23:37:44 Socket created successfully and ready to accept connection from clients.
+2021:11:20 23:39:32 server pid = 1275174
+2021:11:20 23:39:32 Initialise server FTP program...
+2021:11:20 23:39:32 Socket created successfully and ready to accept connection from clients.
+2021:11:20 23:39:38 Message processed successfully - 0.0.0.0.
+2021:11:20 23:39:39 Message processed successfully - 0.0.0.0.
