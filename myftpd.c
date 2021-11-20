@@ -11,6 +11,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <errno.h>
 #include <netdb.h>
 #include <string.h>
 #include <stdlib.h>
@@ -20,7 +21,7 @@
 #include "protocol.h"
 
 int daemon_init();
-int startServerProg();
+int startServerProg(int argumentCount, char *argumentValue[]);
 int initServerProg(int *socketNum);
 int svrSendMessage(int socketNum, char *bufMesg, int mesgSize, struct sockaddr *recipient, int recipientLeng, char *sendTime);
 int svrRecvMessage(int socketNum, char *bufMesg, int bufferSize, int *mesgSize, struct sockaddr *sender, int *senderLeng, char *receiveTime);
@@ -29,9 +30,9 @@ void currentTime(char *timeNow);
 FILE *svrAccessLog;
 FILE *svrErrorLog;
 
-int main()
+int main(int argc, char *argv[])
 {
-    startServerProg();
+    startServerProg(argc, argv);
     return 0;
 }
 
@@ -54,21 +55,32 @@ int daemon_init()
     return OK;
 }
 
-int startServerProg()
+int startServerProg(int argumentCount, char *argumentValue[])
 {
     int socketStatus, messageSize, serverSocket, cliConnSocket, recipientLen, senderLen;
-    char *accessLog = "svr_access_log.txt";
-    char *errorLog = "svr_error_log.txt";
+    char *accessLog = "svr_access_log.txt", *errorLog = "svr_error_log.txt";
     char programTime[MAX_TIME] = "";
-    char mesgFromUser[1024];
-    char commandFromMesg[1024];
-    char argumentFromMesg[1024];
+    char mesgFromUser[MAX_BLOCK_SIZE], commandFromMesg[MAX_BLOCK_SIZE], argumentFromMesg[MAX_BLOCK_SIZE];
+    pid_t pid;
 
     struct sockaddr *recipient, *sender;
 
     currentTime(programTime);
     svrAccessLog = fopen(accessLog, "a");
     svrErrorLog = fopen(errorLog, "a");
+
+    if (argumentCount == 1)
+    {
+        chdir("/");
+    }
+    else if (argumentCount == 2)
+    {
+        if (chdir(argumentValue[1]) < 0)
+        {
+            perror("Path error: ");
+            return PATH_ERROR;
+        }
+    }
 
     if (svrAccessLog == NULL)
     {
@@ -96,27 +108,48 @@ int startServerProg()
     }
 
     printf("Socket created successfully and ready to accept connection from clients.\n");
-    cliConnSocket = accept(serverSocket, NULL, NULL);
-    if (cliConnSocket < 0)
+    while (1)
     {
-        perror("Error in accepting connection from clients: ");
-        printf("Program is terminating...\n");
-        close(serverSocket);
-        return ACCEPT_FAILED;
-    }
-
-    do
-    {
-        socketStatus = svrRecvMessage(cliConnSocket, mesgFromUser, sizeof(mesgFromUser), &messageSize, sender, &senderLen, programTime);
-        if (socketStatus < 0)
+        senderLen = sizeof(sender);
+        struct sockaddr_in *sender_addr = (struct sockaddr_in *)sender;
+        cliConnSocket = accept(serverSocket, sender_addr, (socklen_t *)&senderLen);
+        if (cliConnSocket < 0)
         {
-            printf("Failed to receive messages. Please check again.\n");
-            fprintf(svrErrorLog, "%s Unable to receive message.", programTime);
-            fflush(svrErrorLog);
-            break;
-        }
-    } while (1);
+            if (errno == EINTR)
+            {
+                fprintf(svrAccessLog, "%s SIGCHLD interrupted", programTime);
+                continue;
+            }
 
+            perror("Error in accepting connection from clients: ");
+            printf("Program is terminating...\n");
+            close(serverSocket);
+            return ACCEPT_FAILED;
+        }
+
+        if ((pid = fork()) < 0)
+        {
+            perror("fork error");
+            exit(FORK_ERROR);
+        }
+        else if (pid > 0)
+        {
+            close(cliConnSocket);
+            continue;
+        }
+
+        do
+        {
+            socketStatus = svrRecvMessage(cliConnSocket, mesgFromUser, sizeof(mesgFromUser), &messageSize, sender, &senderLen, programTime);
+            if (socketStatus < 0)
+            {
+                printf("Failed to receive messages. Please check again.\n");
+                fprintf(svrErrorLog, "%s Unable to receive message.", programTime);
+                fflush(svrErrorLog);
+                break;
+            }
+        } while (1);
+    }
     return OK;
 }
 

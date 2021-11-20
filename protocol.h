@@ -22,10 +22,12 @@
 #define RECEIVE_FAILED -6
 #define ACCEPT_FAILED -7
 #define FORK_ERROR -8
+#define PATH_ERROR -9
 
 #define SERVER_FTP_PORT 8000
 #define serverQueue 100
 
 #define MAX_TIME 256
+#define MAX_BLOCK_SIZE (1024*20)
 
 #endif
