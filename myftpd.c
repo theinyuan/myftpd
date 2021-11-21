@@ -30,8 +30,8 @@ void serve_client(int socketNum, struct sockaddr *addr);
 void currentTime(char *timeNow);
 
 FILE *svrAccessLog;
-FILE *svrErrorLog;
 FILE *outputFile;
+char *space = " ";
 
 int main(int argc, char *argv[])
 {
@@ -79,7 +79,7 @@ int daemon_init()
 int startServerProg(int argumentCount, char *argumentValue[])
 {
     int socketStatus, messageSize, serverSocket, cliConnSocket, recipientLen, senderLen;
-    char *accessLog = "svr_access_log.txt", *errorLog = "svr_error_log.txt";
+    char *accessLog = "svr_access_log.txt";
     char programTime[MAX_TIME] = "";
     char mesgFromUser[MAX_BLOCK_SIZE], commandFromMesg[MAX_BLOCK_SIZE], argumentFromMesg[MAX_BLOCK_SIZE], replyMessage[MAX_BLOCK_SIZE];
     pid_t pid;
@@ -88,7 +88,6 @@ int startServerProg(int argumentCount, char *argumentValue[])
 
     currentTime(programTime);
     svrAccessLog = fopen(accessLog, "a");
-    svrErrorLog = fopen(errorLog, "a");
 
     if (argumentCount == 1)
     {
@@ -106,10 +105,6 @@ int startServerProg(int argumentCount, char *argumentValue[])
     if (svrAccessLog == NULL)
     {
         printf("Error: can't create log file %s\n", accessLog);
-    }
-    if (svrErrorLog == NULL)
-    {
-        printf("Error: can't create log file %s\n", errorLog);
     }
 
     if (daemon_init() < 0)
@@ -134,6 +129,7 @@ int startServerProg(int argumentCount, char *argumentValue[])
 
     while (1)
     {
+        currentTime(programTime);
         senderLen = sizeof(sender);
         struct sockaddr *sender_addr = (struct sockaddr *)sender;
         cliConnSocket = accept(serverSocket, sender_addr, (socklen_t *)&senderLen);
@@ -151,6 +147,9 @@ int startServerProg(int argumentCount, char *argumentValue[])
             return ACCEPT_FAILED;
         }
 
+        fprintf(svrAccessLog, "%s Client connected.\n", programTime);
+        fflush(svrAccessLog);
+
         if ((pid = fork()) < 0)
         {
             perror("fork error");
@@ -164,59 +163,86 @@ int startServerProg(int argumentCount, char *argumentValue[])
 
         do
         {
-            currentTime(programTime);
-
-            //socketStatus = svrRecvMessage(cliConnSocket, mesgFromUser, sizeof(mesgFromUser), &messageSize, sender, &senderLen, programTime);
-            /*socketStatus = read(cliConnSocket, mesgFromUser, sizeof(mesgFromUser));
-            if (socketStatus < 0)
-            {
-                printf("Failed to receive messages. Please check again.\n");
-                fprintf(svrErrorLog, "%s Unable to receive message.", programTime);
-                fflush(svrErrorLog);
-                break;
-            }
-            messageSize = recv(cliConnSocket, mesgFromUser, sizeof(mesgFromUser), 0);
-            if (messageSize < 0)
-            {
-                perror("unable to receive");
-                return (RECEIVE_FAILED);
-            }*/
-            //serve_client(cliConnSocket, sender_addr);
             socketStatus = read(cliConnSocket, mesgFromUser, sizeof(mesgFromUser));
             mesgFromUser[socketStatus] = '\0';
-            if (strcmp(mesgFromUser, "pwd") == 0)
+            if (strchr(mesgFromUser, ' ') == NULL)
             {
-                memset(replyMessage,'\0',sizeof(replyMessage));
-                if(system("pwd > /tmp/pwd.txt")<0)
+                strcpy(commandFromMesg, mesgFromUser);
+            }
+            else
+            {
+                strcpy(commandFromMesg, strtok(mesgFromUser, space));
+                strcpy(argumentFromMesg, strtok(NULL, space));
+            }
+            //serve_client(cliConnSocket, sender_addr);
+            if (strcmp(commandFromMesg, "pwd") == 0)
+            {
+                currentTime(programTime);
+                memset(replyMessage, '\0', sizeof(replyMessage));
+                if (system("pwd > /tmp/pwd.txt") < 0)
                 {
                     perror("System error: ");
                     exit(1);
                 }
                 outputFile = fopen("/tmp/pwd.txt", "r");
                 socketStatus = fread(replyMessage, sizeof(replyMessage), sizeof(char), outputFile);
+                strtok(replyMessage, "\n");
                 write(cliConnSocket, replyMessage, sizeof(replyMessage));
-                fprintf(svrAccessLog, "%s Message %s received successfully.\n", programTime, mesgFromUser);
+                fprintf(svrAccessLog, "%s Message %s received successfully.\n", programTime, commandFromMesg);
                 fprintf(svrAccessLog, "%s Message %s sent successfully.\n", programTime, replyMessage);
                 fflush(svrAccessLog);
                 fclose(outputFile);
-                //system("rm /tmp/pwd.txt");
+                system("rm /tmp/pwd.txt");
+                //memset(commandFromMesg, '\0', sizeof(commandFromMesg));
+                close(socketStatus);
             }
-            int writeStatus = write(cliConnSocket, mesgFromUser, socketStatus);
-            /*messageSize = recv(cliConnSocket,mesgFromUser,sizeof(mesgFromUser),0);
-            if(strchr(mesgFromUser, ' ') == NULL)
+            else if (strcmp(commandFromMesg, "dir") == 0)
             {
-                strcpy(commandFromMesg,mesgFromUser);
-            } else 
+                currentTime(programTime);
+                memset(replyMessage, '\0', sizeof(replyMessage));
+                if (system("dir > /tmp/dir.txt") < 0)
+                {
+                    perror("System error: ");
+                    exit(1);
+                }
+                outputFile = fopen("/tmp/dir.txt", "r");
+                socketStatus = fread(replyMessage, sizeof(replyMessage), sizeof(char), outputFile);
+                write(cliConnSocket, replyMessage, sizeof(replyMessage));
+                fprintf(svrAccessLog, "%s Message %s received successfully.\n", programTime, commandFromMesg);
+                fprintf(svrAccessLog, "%s Message %s sent successfully.\n", programTime, replyMessage);
+                fflush(svrAccessLog);
+                fclose(outputFile);
+                system("rm /tmp/dir.txt");
+                memset(commandFromMesg, '\0', sizeof(commandFromMesg));
+            }
+            else if (strcmp(commandFromMesg, "cd") == 0)
             {
-                strcpy(commandFromMesg,strtok(mesgFromUser," "));
-                strcpy(argumentFromMesg, strtok(NULL," "));
-            }*/
-            fprintf(svrAccessLog, "%s Message %s received successfully.\n", programTime, mesgFromUser);
-            fprintf(svrAccessLog, "%s Message %s sent successfully.\n", programTime, mesgFromUser);
-            fflush(svrAccessLog);
-        } while (1);
+                currentTime(programTime);
+                socketStatus = chdir(argumentFromMesg);
+                if (socketStatus < 0)
+                {
+                    memset(replyMessage, '\0', sizeof(replyMessage));
+                    strcpy(replyMessage, "Invalid directory");
+                    write(cliConnSocket, replyMessage, sizeof(replyMessage));
+                    fprintf(svrAccessLog, "%s %s directory does not exist.\n", programTime, argumentFromMesg);
+                    fflush(svrAccessLog);
+                }
+                //memset(commandFromMesg, '\0', sizeof(commandFromMesg));
+                //memset(argumentFromMesg, '\0', sizeof(argumentFromMesg));
+            }
+            else
+            {
+                currentTime(programTime);
+                int writeStatus = write(cliConnSocket, commandFromMesg, socketStatus);
+                fprintf(svrAccessLog, "%s Message %s received successfully.\n", programTime, mesgFromUser);
+                fprintf(svrAccessLog, "%s Message %s sent successfully.\n", programTime, commandFromMesg);
+                fflush(svrAccessLog);
+            }
+        } while (strcmp(commandFromMesg, "quit") != 0);
+        fprintf(svrAccessLog, "%s Client disconnected.\n", programTime);
+        fflush(svrAccessLog);
     }
-
+    fclose(svrAccessLog);
     close(serverSocket);
     return OK;
 }
@@ -230,8 +256,8 @@ int initServerProg(int *socketNum, char *initTime)
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
         perror("Failed to create socket");
-        fprintf(svrErrorLog, "%s Failed to create socket\n", initTime);
-        fflush(svrErrorLog);
+        fprintf(svrAccessLog, "%s Failed to create socket\n", initTime);
+        fflush(svrAccessLog);
         return (CREATE_SOCKET_FAILED);
     }
 
@@ -244,8 +270,8 @@ int initServerProg(int *socketNum, char *initTime)
     if (bind(sock, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0)
     {
         perror("Unable to bind socket to the server IP");
-        fprintf(svrErrorLog, "%s Unable to bind socket to the server IP\n", initTime);
-        fflush(svrErrorLog);
+        fprintf(svrAccessLog, "%s Unable to bind socket to the server IP\n", initTime);
+        fflush(svrAccessLog);
         close(sock);
         return (BIND_FAILED);
     }
