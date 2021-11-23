@@ -10,13 +10,13 @@
 
 #define EXCEEDED_ALLOWED_SIZE 2
 
-#define FILE_ALREADY_EXIST 3 //for put command
-#define FILE_NO_CONFLICT 0 //for put command
+#define EOF_MESSAGE "30FM5G" //opcode in 6 byte representing end of file
+#define FILE_ERROR "2"
 
-#define EOF_MESSAGE "Finished downloading" //for get command
-#define FILE_ERROR "Unexcepted error" //for get command
-#define FILE_NOT_FOUND "File not found" //for get command
-#define FILE_FOUND "File found" //for get command
+#define FILE_ALREADY_EXIST "1" //for put command
+#define FILE_NO_CONFLICT "0" //for put command
+#define FILE_NOT_FOUND "1" //for get command
+#define FILE_FOUND "0" //for get command
 
 #define OK 0
 

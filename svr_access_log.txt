@@ -464,3 +464,106 @@ myftpd.o
 myftpd.c
  sent to the client.
 2021:11:23 14:32:53 End of process
+2021:11:23 15:00:01 server pid = 60812
+2021:11:23 15:00:01 Initialise server FTP program...
+2021:11:23 15:00:01 Socket created successfully and ready to accept connection from clients.
+2021:11:23 15:00:08 Client connected.
+2021:11:23 15:00:13 pwd command received from client.
+2021:11:23 15:00:13 /root/ict374/assignment/assign2/myftpd sent to the client.
+2021:11:23 15:00:17 dir command received from client.
+2021:11:23 15:00:17 .vscode
+svr_access_log.txt
+myftp.c
+.git
+protocol.c
+makefile
+myftpd
+protocol.o
+protocol.h
+README.md
+myftpd.o
+myftpd.c
+sent to the client.
+2021:11:23 15:01:37 File  sent to client successfully.
+2021:11:23 15:02:43 End of process
+2021:11:23 15:07:40 server pid = 61187
+2021:11:23 15:07:40 Initialise server FTP program...
+2021:11:23 15:07:40 Socket created successfully and ready to accept connection from clients.
+2021:11:23 15:07:45 Client connected.
+2021:11:23 15:07:49 dir command received from client.
+2021:11:23 15:07:49 .vscode
+svr_access_log.txt
+myftp.c
+.git
+protocol.c
+makefile
+myftpd
+protocol.o
+protocol.h
+README.md
+myftpd.o
+myftpd.c
+sent to the client.
+2021:11:23 15:08:17 File  sent to client successfully.
+2021:11:23 15:08:51 End of process
+2021:11:23 15:20:32 server pid = 61818
+2021:11:23 15:20:32 Initialise server FTP program...
+2021:11:23 15:20:32 Socket created successfully and ready to accept connection from clients.
+2021:11:23 15:20:39 Client connected.
+2021:11:23 15:20:44 dir command received from client.
+2021:11:23 15:20:44 .vscode
+svr_access_log.txt
+myftp.c
+.git
+protocol.c
+makefile
+myftpd
+protocol.o
+protocol.h
+README.md
+myftpd.o
+myftpd.c
+sent to the client.
+2021:11:23 15:20:48 File  sent to client successfully.
+2021:11:23 15:20:55 File  sent to client successfully.
+2021:11:23 15:20:58 End of process
+2021:11:23 15:20:58 SIGCHLD interrupted
+2021:11:23 15:32:37 Client connected.
+2021:11:23 15:32:47 pwd command received from client.
+2021:11:23 15:32:47 /root/ict374/assignment/assign2/myftpd sent to the client.
+2021:11:23 15:32:49 dir command received from client.
+2021:11:23 15:32:49 .vscode
+svr_access_log.txt
+myftp.c
+.git
+protocol.c
+makefile
+myftpd
+protocol.o
+protocol.h
+README.md
+myftpd.o
+myftpd.c
+sent to the client.
+2021:11:23 15:32:55 File  sent to client successfully.
+2021:11:23 15:33:07 End of process
+2021:11:23 15:33:29 server pid = 62217
+2021:11:23 15:33:29 Initialise server FTP program...
+2021:11:23 15:33:29 Socket created successfully and ready to accept connection from clients.
+2021:11:23 15:33:39 Client connected.
+2021:11:23 15:33:42 dir command received from client.
+2021:11:23 15:33:42 .vscode
+svr_access_log.txt
+myftp.c
+.git
+protocol.c
+makefile
+myftpd
+protocol.o
+protocol.h
+README.md
+myftpd.o
+myftpd.c
+sent to the client.
+2021:11:23 15:33:44 File makefile sent to client successfully.
+2021:11:23 15:33:52 End of process

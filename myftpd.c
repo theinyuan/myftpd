@@ -379,7 +379,7 @@ void getCommand(int cliSocket)
             {
                 if(strcmp(currtDir->d_name,uploadedFileName)==0)
                 {
-                    fileFound++;
+                    ++fileFound;
                 }//end if
             }//end if
         }//end while
@@ -396,16 +396,16 @@ void getCommand(int cliSocket)
         bzero(uploadedFileName,sizeof(uploadedFileName));
         if(outputFile == NULL)
         {
-            writeContent(cliSocket,FILE_ERROR,strlen(FILE_ERROR));
+            writeContent(cliSocket,FILE_ERROR,sizeof(FILE_ERROR));
         } else
         {
             while((fread(fileInServer,sizeof(char),sizeof(outputFile),outputFile))>0)
             {
                 writeContent(cliSocket,fileInServer,strlen(fileInServer));
                 bzero(fileInServer,sizeof(fileInServer));
-            }
+            }//end while
             writeContent(cliSocket,EOF_MESSAGE,sizeof(EOF_MESSAGE));
-        }
+        }//end if
         fclose(outputFile);
         fprintf(svrAccessLog,"%s File %s sent to client successfully.\n",getTime,uploadedFileName);
         fflush(svrAccessLog);
@@ -414,7 +414,7 @@ void getCommand(int cliSocket)
         writeContent(cliSocket,FILE_NOT_FOUND,strlen(FILE_NOT_FOUND));
         fprintf(svrAccessLog,"%s File %s not found.\n",getTime,uploadedFileName);
         fflush(svrAccessLog);
-    }
+    }//end if
 }
 
 void putCommand(int cliSocket)
