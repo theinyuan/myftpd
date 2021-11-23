@@ -23,7 +23,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
-#include <time.h>
 
 #include "protocol.h"
 
@@ -32,7 +31,6 @@ int daemon_init();
 int startServerProg(int argumentCount, char *argumentValue[]);
 int initServerProg(int *socketNum);
 void serve_client(int socketNum);
-void currentTime(char *timeNow);
 void pwdCommand(int cliSocket);
 void dirCommand(int cliSocket);
 void cdCommand(int cliSocket);
@@ -240,15 +238,6 @@ void serve_client(int socketNum)
             putCommand(socketNum);
         }
     }
-}
-
-void currentTime(char *timeNow)
-{
-    int hours, minutes, seconds, day, month, year;
-    time_t now;
-    time(&now);
-    struct tm *local = localtime(&now);
-    strftime(timeNow, MAX_TIME, "%Y:%m:%d %H:%M:%S", local);
 }
 
 void pwdCommand(int cliSocket)

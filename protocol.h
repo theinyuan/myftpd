@@ -38,5 +38,6 @@
 
 int readContent(int fd, char *buf, int bufsize);
 int writeContent(int fd, char *buf, int nbytes);
+void currentTime(char *timeNow);
 
 #endif

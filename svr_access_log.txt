@@ -638,3 +638,65 @@ sent to the client.
 2021:11:23 17:25:10 File TEXT.docx uploaded successfully to /root/ict374/assignment/assign2/myftpd.
 2021:11:23 17:25:55 TEXT.docx existed on the server.
 2021:11:23 17:26:20 End of process
+2021:11:23 17:51:30 server pid = 67348
+2021:11:23 17:51:30 Initialise server FTP program...
+2021:11:23 17:51:30 Socket created successfully and ready to accept connection from clients.
+2021:11:23 17:51:39 Client connected.
+2021:11:23 17:51:44 dir command received from client.
+2021:11:23 17:51:44 .vscode
+svr_access_log.txt
+myftp.c
+.git
+protocol.c
+makefile
+myftpd
+protocol.o
+protocol.h
+README.md
+myftpd.o
+myftpd.c
+sent to the client.
+2021:11:23 17:51:49 pwd command received from client.
+2021:11:23 17:51:49 /root/ict374/assignment/assign2/myftpd sent to the client.
+2021:11:23 17:51:59 /root is the current directory.
+2021:11:23 17:52:22 Client connected.
+2021:11:23 17:52:26 dir command received from client.
+2021:11:23 17:52:26 .vscode
+svr_access_log.txt
+myftp.c
+.git
+protocol.c
+makefile
+myftpd
+protocol.o
+protocol.h
+README.md
+myftpd.o
+myftpd.c
+sent to the client.
+2021:11:23 17:52:27 dir command received from client.
+2021:11:23 17:52:27 .gitsomeconfig
+.bash_history
+snap
+test.pcap
+.local
+.profile
+my.fifo
+test1.pcap
+.bashrc
+.cloud-locale-test.skip
+.config
+.gitconfig
+.cache
+udp-ping.linux
+.ssh
+text.txt
+.wget-hsts
+.vscode-server
+nginx
+ict374
+.mysql_history
+sent to the client.
+2021:11:23 17:52:34 End of process
+2021:11:23 17:52:34 SIGCHLD interrupted
+2021:11:23 17:52:36 End of process

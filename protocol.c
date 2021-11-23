@@ -1,6 +1,7 @@
 #include <sys/types.h>
 #include <netinet/in.h> /* struct sockaddr_in, htons(), htonl(), */
 #include <stdlib.h>
+#include <time.h>
 #include <unistd.h>
 
 #include "protocol.h"
@@ -52,4 +53,13 @@ int writeContent(int fd, char *buf, int nbytes)
             return (nw); /* write error */
     }
     return (n); //return the amount of characters/bytes writen if write is successful
+}
+
+void currentTime(char *timeNow)
+{
+    int hours, minutes, seconds, day, month, year;
+    time_t now;
+    time(&now);
+    struct tm *local = localtime(&now);
+    strftime(timeNow, MAX_TIME, "%Y:%m:%d %H:%M:%S", local);
 }
