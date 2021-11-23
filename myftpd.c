@@ -356,10 +356,67 @@ void cdCommand(int cliSocket)
     }
 }
 
-void getCommand(int clisocket)
+void getCommand(int cliSocket)
 {
+    char getTime[MAX_TIME]="";
+    currentTime(getTime);
+    char uploadedFileName[MAX_BLOCK_SIZE]={0};
+    char currentPath[MAX_BLOCK_SIZE]={0};
+    int fileFound=0;
+
+    readContent(cliSocket,uploadedFileName,sizeof(uploadedFileName));
+    getcwd(currentPath,sizeof(currentPath));
+
+    DIR *d;
+    struct dirent *currtDir;
+    d = opendir(currentPath);
+
+    if (d)
+    {
+        while ((currtDir = readdir(d)) != NULL)
+        {
+            if (strcmp(currtDir->d_name, ".") != 0 && strcmp(currtDir->d_name, "..") != 0)
+            {
+                if(strcmp(currtDir->d_name,uploadedFileName)==0)
+                {
+                    fileFound++;
+                }//end if
+            }//end if
+        }//end while
+    }//end if
+
+    closedir(d);
+    bzero(currentPath,sizeof(currentPath));
+
+    if(fileFound>0)
+    {
+        writeContent(cliSocket,FILE_FOUND,strlen(FILE_FOUND));
+        char fileInServer[1000]={0};
+        outputFile=fopen(uploadedFileName,"r");
+        bzero(uploadedFileName,sizeof(uploadedFileName));
+        if(outputFile == NULL)
+        {
+            writeContent(cliSocket,FILE_ERROR,strlen(FILE_ERROR));
+        } else
+        {
+            while((fread(fileInServer,sizeof(char),sizeof(outputFile),outputFile))>0)
+            {
+                writeContent(cliSocket,fileInServer,strlen(fileInServer));
+                bzero(fileInServer,sizeof(fileInServer));
+            }
+            writeContent(cliSocket,EOF_MESSAGE,sizeof(EOF_MESSAGE));
+        }
+        fclose(outputFile);
+        fprintf(svrAccessLog,"%s File %s sent to client successfully.\n",getTime,uploadedFileName);
+        fflush(svrAccessLog);
+    } else
+    {
+        writeContent(cliSocket,FILE_NOT_FOUND,strlen(FILE_NOT_FOUND));
+        fprintf(svrAccessLog,"%s File %s not found.\n",getTime,uploadedFileName);
+        fflush(svrAccessLog);
+    }
 }
 
-void putCommand(int clisocket)
+void putCommand(int cliSocket)
 {
 }
