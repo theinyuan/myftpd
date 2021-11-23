@@ -10,8 +10,11 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+
 #include <netinet/in.h>
 #include <arpa/inet.h>
+
+#include <dirent.h>
 #include <errno.h>
 #include <netdb.h>
 #include <signal.h>
@@ -20,14 +23,20 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <time.h>
+
 #include "protocol.h"
 
 void claim_children();
 int daemon_init();
 int startServerProg(int argumentCount, char *argumentValue[]);
-int initServerProg(int *socketNum, char *initTime);
-void serve_client(int socketNum, struct sockaddr *addr);
+int initServerProg(int *socketNum);
+void serve_client(int socketNum);
 void currentTime(char *timeNow);
+void pwdCommand(int cliSocket);
+void dirCommand(int cliSocket);
+void cdCommand(int cliSocket);
+void getCommand(int cliSocket);
+void putCommand(int cliSocket);
 
 FILE *svrAccessLog;
 FILE *outputFile;
@@ -42,11 +51,16 @@ int main(int argc, char *argv[])
 void claim_children()
 {
     pid_t pid = 1;
+    char childTime[MAX_TIME] = "";
+    currentTime(childTime);
 
     while (pid > 0)
     { /* claim as many zombies as we can */
         pid = waitpid(0, (int *)0, WNOHANG);
     }
+
+    fprintf(svrAccessLog, "%s End of process\n", childTime);
+    fflush(svrAccessLog);
 }
 
 int daemon_init()
@@ -65,7 +79,6 @@ int daemon_init()
     }
 
     setsid();
-    chdir("/");
     umask(0);
 
     act.sa_handler = claim_children; /* use reliable signal */
@@ -78,20 +91,23 @@ int daemon_init()
 
 int startServerProg(int argumentCount, char *argumentValue[])
 {
-    int socketStatus, messageSize, serverSocket, cliConnSocket, recipientLen, senderLen;
+    int socketStatus, serverSocket, cliConnSocket;
     char *accessLog = "svr_access_log.txt";
     char programTime[MAX_TIME] = "";
-    char mesgFromUser[MAX_BLOCK_SIZE], commandFromMesg[MAX_BLOCK_SIZE], argumentFromMesg[MAX_BLOCK_SIZE], replyMessage[MAX_BLOCK_SIZE];
+    //char mesgFromUser[MAX_BLOCK_SIZE], commandFromMesg[MAX_BLOCK_SIZE], argumentFromMesg[MAX_BLOCK_SIZE], replyMessage[MAX_BLOCK_SIZE];
+    socklen_t senderLen;
     pid_t pid;
 
-    struct sockaddr *recipient, *sender;
+    struct sockaddr_in sender;
 
     currentTime(programTime);
     svrAccessLog = fopen(accessLog, "a");
 
     if (argumentCount == 1)
     {
-        chdir("/");
+        char currentPath[PATH_MAX];
+        getcwd(currentPath, sizeof(currentPath));
+        chdir(currentPath);
     }
     else if (argumentCount == 2)
     {
@@ -112,39 +128,34 @@ int startServerProg(int argumentCount, char *argumentValue[])
         printf("Unable to convert into daemon\n"), exit(4);
     }
 
-    fprintf(svrAccessLog, "%s server pid = %d\n", programTime, getpid());
-    fflush(svrAccessLog);
-    fprintf(svrAccessLog, "%s Initialise server FTP program...\n", programTime);
-    fflush(svrAccessLog);
-
-    socketStatus = initServerProg(&serverSocket, programTime);
+    socketStatus = initServerProg(&serverSocket);
     if (socketStatus != 0)
     {
         printf("Socket error. This program will be terminated.\n");
         exit(socketStatus);
     }
-
+    fprintf(svrAccessLog, "%s server pid = %d\n", programTime, getpid());
+    fprintf(svrAccessLog, "%s Initialise server FTP program...\n", programTime);
     fprintf(svrAccessLog, "%s Socket created successfully and ready to accept connection from clients.\n", programTime);
     fflush(svrAccessLog);
 
     while (1)
     {
-        currentTime(programTime);
         senderLen = sizeof(sender);
-        cliConnSocket = accept(serverSocket, (struct sockaddr *)sender, &senderLen);
+        cliConnSocket = accept(serverSocket, (struct sockaddr *)&sender, &senderLen);
         if (cliConnSocket < 0)
         {
             if (errno == EINTR)
             {
-                fprintf(svrAccessLog, "%s SIGCHLD interrupted", programTime);
+                currentTime(programTime);
+                fprintf(svrAccessLog, "%s SIGCHLD interrupted\n", programTime);
                 continue;
             }
 
             perror("Error in accepting connection from clients: ");
-            close(serverSocket);
             return ACCEPT_FAILED;
         }
-
+        currentTime(programTime);
         fprintf(svrAccessLog, "%s Client connected.\n", programTime);
         fflush(svrAccessLog);
 
@@ -158,98 +169,17 @@ int startServerProg(int argumentCount, char *argumentValue[])
             close(cliConnSocket);
             continue;
         }
-
-        do
-        {
-            socketStatus = read(cliConnSocket, mesgFromUser, sizeof(mesgFromUser));
-            mesgFromUser[socketStatus] = '\0';
-            if (strchr(mesgFromUser, ' ') == NULL)
-            {
-                strcpy(commandFromMesg, mesgFromUser);
-            }
-            else
-            {
-                strcpy(commandFromMesg, strtok(mesgFromUser, space));
-                strcpy(argumentFromMesg, strtok(NULL, space));
-            }
-            //serve_client(cliConnSocket, sender_addr);
-            if (strcmp(commandFromMesg, "pwd") == 0)
-            {
-                currentTime(programTime);
-                memset(replyMessage, '\0', sizeof(replyMessage));
-                if (system("pwd > /tmp/pwd.txt") < 0)
-                {
-                    perror("System error: ");
-                    exit(1);
-                }
-                outputFile = fopen("/tmp/pwd.txt", "r");
-                socketStatus = fread(replyMessage, sizeof(replyMessage), sizeof(char), outputFile);
-                strtok(replyMessage, "\n");
-                write(cliConnSocket, replyMessage, sizeof(replyMessage));
-                fprintf(svrAccessLog, "%s Message %s received successfully.\n", programTime, commandFromMesg);
-                fprintf(svrAccessLog, "%s Message %s sent successfully.\n", programTime, replyMessage);
-                fflush(svrAccessLog);
-                fclose(outputFile);
-                system("rm /tmp/pwd.txt");
-                //memset(commandFromMesg, '\0', sizeof(commandFromMesg));
-                close(socketStatus);
-            }
-            else if (strcmp(commandFromMesg, "dir") == 0)
-            {
-                currentTime(programTime);
-                memset(replyMessage, '\0', sizeof(replyMessage));
-                if (system("dir > /tmp/dir.txt") < 0)
-                {
-                    perror("System error: ");
-                    exit(1);
-                }
-                outputFile = fopen("/tmp/dir.txt", "r");
-                socketStatus = fread(replyMessage, sizeof(replyMessage), sizeof(char), outputFile);
-                write(cliConnSocket, replyMessage, sizeof(replyMessage));
-                fprintf(svrAccessLog, "%s Message %s received successfully.\n", programTime, commandFromMesg);
-                fprintf(svrAccessLog, "%s Message %s sent successfully.\n", programTime, replyMessage);
-                fflush(svrAccessLog);
-                fclose(outputFile);
-                system("rm /tmp/dir.txt");
-                memset(commandFromMesg, '\0', sizeof(commandFromMesg));
-            }
-            else if (strcmp(commandFromMesg, "cd") == 0)
-            {
-                currentTime(programTime);
-                socketStatus = chdir(argumentFromMesg);
-                if (socketStatus < 0)
-                {
-                    memset(replyMessage, '\0', sizeof(replyMessage));
-                    strcpy(replyMessage, "Invalid directory");
-                    write(cliConnSocket, replyMessage, sizeof(replyMessage));
-                    fprintf(svrAccessLog, "%s %s directory does not exist.\n", programTime, argumentFromMesg);
-                    fflush(svrAccessLog);
-                }
-                //memset(commandFromMesg, '\0', sizeof(commandFromMesg));
-                //memset(argumentFromMesg, '\0', sizeof(argumentFromMesg));
-            }
-            else
-            {
-                currentTime(programTime);
-                int writeStatus = write(cliConnSocket, commandFromMesg, socketStatus);
-                fprintf(svrAccessLog, "%s Message %s received successfully.\n", programTime, mesgFromUser);
-                fprintf(svrAccessLog, "%s Message %s sent successfully.\n", programTime, commandFromMesg);
-                fflush(svrAccessLog);
-            }
-        } while (strcmp(commandFromMesg, "quit") != 0);
-        fprintf(svrAccessLog, "%s Client disconnected.\n", programTime);
-        fflush(svrAccessLog);
+        close(serverSocket);
+        serve_client(cliConnSocket);
+        fclose(svrAccessLog);
+        return OK;
     }
-    fclose(svrAccessLog);
-    close(serverSocket);
-    return OK;
 }
 
-int initServerProg(int *socketNum, char *initTime)
+int initServerProg(int *socketNum)
 {
     int sock;
     struct sockaddr_in serverAddr;
-    currentTime(initTime);
 
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
@@ -274,26 +204,43 @@ int initServerProg(int *socketNum, char *initTime)
     return (OK);
 }
 
-void serve_client(int socketNum, struct sockaddr *addr)
+void serve_client(int socketNum)
 {
     int nr, nw;
     char buf[MAX_BLOCK_SIZE];
-    char serveTime[MAX_TIME] = "";
-    struct sockaddr_in *sendAddr = (struct sockaddr_in *)&addr;
-    struct in_addr visitorIP = sendAddr->sin_addr;
 
     while (1)
     {
-        if ((nr = read(socketNum, buf, sizeof(buf))) <= 0)
-            exit(0);
-        currentTime(serveTime);
-        fprintf(svrAccessLog, "%s Message processed successfully - %s.\n", serveTime, inet_ntoa(visitorIP));
-        fflush(svrAccessLog);
+        if ((nr = readContent(socketNum, buf, sizeof(buf))) <= 0)
+            return;
+
         /* process data */
         buf[nr] = '\0';
-
-        /* send results to client */
-        nw = write(socketNum, buf, nr);
+        if (strcmp(buf, "pwd") == 0)
+        {
+            bzero(buf, sizeof(buf));
+            pwdCommand(socketNum);
+        }
+        else if (strcmp(buf, "dir") == 0)
+        {
+            bzero(buf, sizeof(buf));
+            dirCommand(socketNum);
+        }
+        else if (strcmp(buf, "cd") == 0)
+        {
+            bzero(buf, sizeof(buf));
+            cdCommand(socketNum);
+        }
+        else if (strcmp(buf, "get") == 0)
+        {
+            bzero(buf, sizeof(buf));
+            getCommand(socketNum);
+        }
+        else if (strcmp(buf, "put") == 0)
+        {
+            bzero(buf, sizeof(buf));
+            putCommand(socketNum);
+        }
     }
 }
 
@@ -304,4 +251,115 @@ void currentTime(char *timeNow)
     time(&now);
     struct tm *local = localtime(&now);
     strftime(timeNow, MAX_TIME, "%Y:%m:%d %H:%M:%S", local);
+}
+
+void pwdCommand(int cliSocket)
+{
+    char pwdTime[MAX_TIME] = "";
+    currentTime(pwdTime);
+    char currentPathName[MAX_BLOCK_SIZE] = {0};
+    getcwd(currentPathName, sizeof(currentPathName));
+    writeContent(cliSocket, currentPathName, strlen(currentPathName));
+
+    fprintf(svrAccessLog, "%s pwd command received from client.\n", pwdTime);
+    fprintf(svrAccessLog, "%s %s sent to the client.\n", pwdTime, currentPathName);
+    fflush(svrAccessLog);
+}
+
+void dirCommand(int cliSocket)
+{
+    char dirTime[MAX_TIME] = "";
+    currentTime(dirTime);
+    char currentDirectory[MAX_BLOCK_SIZE] = {0};
+    char fileNameInDir[MAX_BLOCK_SIZE] = {0};
+    char fileList[MAX_BLOCK_SIZE] = {0};
+    getcwd(currentDirectory, sizeof(currentDirectory));
+
+    DIR *d;
+    struct dirent *currtDir;
+    d = opendir(currentDirectory);
+
+    if (d)
+    {
+        while ((currtDir = readdir(d)) != NULL)
+        {
+            if (strcmp(currtDir->d_name, ".") != 0 && strcmp(currtDir->d_name, "..") != 0)
+            {
+                strcpy(fileNameInDir, currtDir->d_name);
+                strcat(fileList, fileNameInDir);
+                strcat(fileList, "\n");
+            }
+        }
+    }
+    writeContent(cliSocket, fileList, strlen(fileList));
+    closedir(d);
+
+    fprintf(svrAccessLog, "%s dir command received from client.\n", dirTime);
+    fprintf(svrAccessLog, "%s %ssent to the client.\n", dirTime, fileList);
+    fflush(svrAccessLog);
+}
+
+void cdCommand(int cliSocket)
+{
+    char cdTime[MAX_TIME] = "";
+    currentTime(cdTime);
+    char argument[MAX_BLOCK_SIZE] = {0};
+    char replyClient[MAX_BLOCK_SIZE] = {0};
+    int count = 0;
+
+    readContent(cliSocket, argument, sizeof(argument));
+    if (strcmp(argument, "#") != 0)
+    {
+        count = 1;
+    }
+
+    if (count > 0)
+    {
+        if (strcmp(argument, ".") == 0)
+        {
+            getcwd(replyClient, sizeof(replyClient));
+        }
+        else if (strcmp(argument, "~") == 0)
+        {
+            chdir(getenv("HOME"));
+            getcwd(replyClient, sizeof(replyClient));
+        }
+        else
+        {
+            if (chdir(argument) < 0)
+            {
+                strcat(replyClient, "Directory not found!");
+                count = 2;
+            }
+            else
+            {
+                getcwd(replyClient, sizeof(replyClient));
+            } //end if
+        }     // end if
+    }
+    else
+    {
+        chdir(getenv("HOME"));
+        getcwd(replyClient, sizeof(replyClient));
+    } //end if
+
+    writeContent(cliSocket, replyClient, strlen(replyClient));
+    if (count == 2)
+    {
+        fprintf(svrAccessLog, "%s Directory %s not found.\n", cdTime, argument);
+        fflush(svrAccessLog);
+    }
+    else
+    {
+        fprintf(svrAccessLog, "%s %s is the current directory.\n", cdTime, replyClient);
+        fflush(svrAccessLog);
+    }
+}
+
+void getCommand(int clisocket)
+{
+}
+
+void putCommand(int clisocket)
+{
 }

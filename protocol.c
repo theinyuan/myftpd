@@ -12,7 +12,7 @@ int readContent(int fd, char *buf, int bufsize)
 
     /* check buffer size len */
     if (bufsize < MAX_BLOCK_SIZE) //bufsize being read is bigger than max size
-        return (-3);
+        return (EXCEEDED_ALLOWED_SIZE);
 
     /* get the size of data sent*/
     if (read(fd, (char *)&data_size, 1) != 1)
@@ -36,7 +36,7 @@ int writeContent(int fd, char *buf, int nbytes)
     int n, nw;
 
     if (nbytes > MAX_BLOCK_SIZE) //nbytes being writen is larger than max block size
-        return (-3);
+        return (EXCEEDED_ALLOWED_SIZE);
 
     /* send the data size */
     data_size = htons(data_size); //convert to network byte order

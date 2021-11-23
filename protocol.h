@@ -8,9 +8,13 @@
  *  Protocol used: TCP
  */
 
-#define FILE_ALREADY_EXIST 3
 #define EXCEEDED_ALLOWED_SIZE 2
-#define FILE_NOT_FOUND 1
+
+#define FILE_ALREADY_EXIST 3 //for put command
+#define FILE_NO_CONFLICT 0 //for put command
+
+#define FILE_NOT_FOUND 1 //for get command
+#define FILE_FOUND 0 //for get command
 
 #define OK 0
 

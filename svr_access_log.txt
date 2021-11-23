@@ -273,3 +273,194 @@ boot  etc  lab8  lib32	libx32	media	    opt  root  sbin  srv   tmp	var
 2021:11:21 20:12:16 Message bin   dev  home  lib	lib64	lost+found  mnt  proc  run   snap  sys	usr
 boot  etc  lab8  lib32	libx32	media	    opt  root  sbin  srv   tmp	var
  sent successfully.
+2021:11:23 13:05:12 server pid = 54789
+2021:11:23 13:05:12 Initialise server FTP program...
+2021:11:23 13:05:12 Socket created successfully and ready to accept connection from clients.
+2021:11:23 13:07:06 server pid = 54917
+2021:11:23 13:07:06 Initialise server FTP program...
+2021:11:23 13:07:06 Socket created successfully and ready to accept connection from clients.
+2021:11:23 13:11:03 server pid = 55320
+2021:11:23 13:11:03 Initialise server FTP program...
+2021:11:23 13:11:03 Socket created successfully and ready to accept connection from clients.
+2021:11:23 13:11:03 Client connected.
+2021:11:23 13:15:21 server pid = 55528
+2021:11:23 13:15:21 Initialise server FTP program...
+2021:11:23 13:15:21 Socket created successfully and ready to accept connection from clients.
+2021:11:23 13:15:21 Client connected.
+(null) End of process2021:11:23 13:15:28 SIGCHLD interrupted2021:11:23 13:15:46 Client connected.
+2021:11:23 13:17:38 server pid = 55725
+2021:11:23 13:17:38 Initialise server FTP program...
+2021:11:23 13:17:38 Socket created successfully and ready to accept connection from clients.
+2021:11:23 13:17:43 Client connected.
+(null) End of process
+2021:11:23 13:17:55 SIGCHLD interrupted
+2021:11:23 13:17:59 Client connected.
+(null) End of process
+2021:11:23 13:18:11 SIGCHLD interrupted
+2021:11:23 13:18:13 Client connected.
+(null) End of process
+2021:11:23 13:18:14 SIGCHLD interrupted
+2021:11:23 13:18:16 Client connected.
+(null) End of process
+2021:11:23 13:20:45 server pid = 56111
+2021:11:23 13:20:45 Initialise server FTP program...
+2021:11:23 13:20:45 Socket created successfully and ready to accept connection from clients.
+2021:11:23 13:20:49 Client connected.
+2021:11:23 13:20:53 End of process
+2021:11:23 13:20:53 SIGCHLD interrupted
+2021:11:23 13:20:55 Client connected.
+2021:11:23 13:20:58 End of process
+2021:11:23 13:20:58 SIGCHLD interrupted
+2021:11:23 13:21:00 Client connected.
+2021:11:23 13:21:06 End of process
+2021:11:23 13:21:06 SIGCHLD interrupted
+2021:11:23 13:21:08 Client connected.
+2021:11:23 13:21:09 End of process
+2021:11:23 13:28:30 server pid = 56341
+2021:11:23 13:28:30 Initialise server FTP program...
+2021:11:23 13:28:30 Socket created successfully and ready to accept connection from clients.
+2021:11:23 13:28:36 Client connected.
+(null) pwd command received. /root/ict374/assignment/assign2/myftpd sent to the client.
+2021:11:23 13:28:54 End of process
+2021:11:23 13:37:12 server pid = 56688
+2021:11:23 13:37:12 Initialise server FTP program...
+2021:11:23 13:37:12 Socket created successfully and ready to accept connection from clients.
+2021:11:23 13:37:19 Client connected.
+2021:11:23 13:37:23 pwd command received from client 1.
+2021:11:23 13:37:23 /root/ict374/assignment/assign2/myftpd sent to the client 1.
+2021:11:23 13:37:33 pwd command received from client 1.
+2021:11:23 13:37:33 /root/ict374/assignment/assign2/myftpd sent to the client 1.
+2021:11:23 13:37:52 Client connected.
+2021:11:23 13:37:56 pwd command received from client 1.
+2021:11:23 13:37:56 /root/ict374/assignment/assign2/myftpd sent to the client 1.
+2021:11:23 13:38:02 End of process
+2021:11:23 13:38:02 SIGCHLD interrupted
+2021:11:23 13:38:07 End of process
+2021:11:23 13:39:15 server pid = 56914
+2021:11:23 13:39:15 Initialise server FTP program...
+2021:11:23 13:39:15 Socket created successfully and ready to accept connection from clients.
+2021:11:23 13:39:17 Client connected.
+2021:11:23 13:39:19 pwd command received from client 1.
+2021:11:23 13:39:19 /root/ict374/assignment/assign2/myftpd sent to the client 1.
+2021:11:23 13:39:22 pwd command received from client 1.
+2021:11:23 13:39:22 /root/ict374/assignment/assign2/myftpd sent to the client 1.
+2021:11:23 13:39:25 Client connected.
+2021:11:23 13:39:27 pwd command received from client 1.
+2021:11:23 13:39:27 /root/ict374/assignment/assign2/myftpd sent to the client 1.
+2021:11:23 13:39:43 End of process
+2021:11:23 13:39:43 SIGCHLD interrupted
+2021:11:23 13:39:47 End of process
+2021:11:23 13:42:10 server pid = 57222
+2021:11:23 13:42:10 Initialise server FTP program...
+2021:11:23 13:42:10 Socket created successfully and ready to accept connection from clients.
+2021:11:23 13:42:14 Client connected.
+2021:11:23 13:42:15 pwd command received from client 0.
+2021:11:23 13:42:15 /root/ict374/assignment/assign2/myftpd sent to the client 0.
+2021:11:23 13:42:17 pwd command received from client 0.
+2021:11:23 13:42:17 /root/ict374/assignment/assign2/myftpd sent to the client 0.
+2021:11:23 13:42:20 Client connected.
+2021:11:23 13:42:21 pwd command received from client 0.
+2021:11:23 13:42:21 /root/ict374/assignment/assign2/myftpd sent to the client 0.
+2021:11:23 13:42:22 pwd command received from client 0.
+2021:11:23 13:42:22 /root/ict374/assignment/assign2/myftpd sent to the client 0.
+2021:11:23 13:42:24 End of process
+2021:11:23 13:42:24 SIGCHLD interrupted
+2021:11:23 13:42:26 End of process
+2021:11:23 13:43:51 server pid = 57340
+2021:11:23 13:43:51 Initialise server FTP program...
+2021:11:23 13:43:51 Socket created successfully and ready to accept connection from clients.
+2021:11:23 13:43:58 Client connected.
+2021:11:23 13:43:58 End of process
+2021:11:23 13:43:58 SIGCHLD interrupted
+2021:11:23 13:44:07 Client connected.
+2021:11:23 13:44:07 End of process
+2021:11:23 13:44:07 SIGCHLD interrupted
+2021:11:23 13:44:20 Client connected.
+2021:11:23 13:44:21 End of process
+2021:11:23 13:46:44 server pid = 57479
+2021:11:23 13:46:44 Initialise server FTP program...
+2021:11:23 13:46:44 Socket created successfully and ready to accept connection from clients.
+2021:11:23 13:46:48 Client connected.
+2021:11:23 13:46:48 End of process
+2021:11:23 13:46:48 SIGCHLD interrupted
+2021:11:23 13:46:53 Client connected.
+2021:11:23 13:46:54 End of process
+2021:11:23 13:46:54 SIGCHLD interrupted
+2021:11:23 13:46:57 Client connected.
+2021:11:23 13:46:57 End of process
+2021:11:23 13:46:57 SIGCHLD interrupted
+2021:11:23 13:46:59 Client connected.
+2021:11:23 13:46:59 End of process
+2021:11:23 13:49:33 server pid = 57638
+2021:11:23 13:49:33 Initialise server FTP program...
+2021:11:23 13:49:33 Socket created successfully and ready to accept connection from clients.
+2021:11:23 13:49:39 Client connected.
+2021:11:23 13:49:41 pwd command received from client.
+2021:11:23 13:49:41 /root/ict374/assignment/assign2/myftpd sent to the client.
+2021:11:23 13:49:48 End of process
+2021:11:23 14:00:15 server pid = 58049
+2021:11:23 14:00:15 Initialise server FTP program...
+2021:11:23 14:00:15 Socket created successfully and ready to accept connection from clients.
+2021:11:23 14:00:19 Client connected.
+2021:11:23 14:00:21 pwd command received from client.
+2021:11:23 14:00:21 /root/ict374/assignment/assign2/myftpd sent to the client.
+2021:11:23 14:00:23 End of process
+2021:11:23 14:00:23 End of process
+2021:11:23 14:05:55 server pid = 58420
+2021:11:23 14:05:55 Initialise server FTP program...
+2021:11:23 14:05:55 Socket created successfully and ready to accept connection from clients.
+2021:11:23 14:06:01 Client connected.
+2021:11:23 14:06:02 pwd command received from client.
+2021:11:23 14:06:02 /root/ict374/assignment/assign2/myftpd sent to the client.
+2021:11:23 14:06:04 dir command received from client.
+2021:11:23 14:06:04 .vscode
+svr_access_log.txt
+myftp.c
+.git
+protocol.c
+makefile
+myftpd
+protocol.o
+protocol.h
+README.md
+myftpd.o
+myftpd.c
+ sent to the client.
+2021:11:23 14:06:14 pwd command received from client.
+2021:11:23 14:06:14 /root/ict374/assignment/assign2/myftpd sent to the client.
+2021:11:23 14:06:33 End of process
+2021:11:23 14:31:10 server pid = 59533
+2021:11:23 14:31:10 Initialise server FTP program...
+2021:11:23 14:31:10 Socket created successfully and ready to accept connection from clients.
+2021:11:23 14:31:16 Client connected.
+2021:11:23 14:31:19 pwd command received from client.
+2021:11:23 14:31:19 /root/ict374/assignment/assign2/myftpd sent to the client.
+2021:11:23 14:31:21 /root/ict374/assignment/assign2 is the current directory.
+2021:11:23 14:31:28 pwd command received from client.
+2021:11:23 14:31:28 /root/ict374/assignment/assign2 sent to the client.
+2021:11:23 14:31:30 dir command received from client.
+2021:11:23 14:31:30 myftpd
+ sent to the client.
+2021:11:23 14:31:49 /root is the current directory.
+2021:11:23 14:31:55 Directory /hahah not found.
+2021:11:23 14:32:07 End of process
+2021:11:23 14:32:29 server pid = 59651
+2021:11:23 14:32:29 Initialise server FTP program...
+2021:11:23 14:32:29 Socket created successfully and ready to accept connection from clients.
+2021:11:23 14:32:33 Client connected.
+2021:11:23 14:32:34 Directory /hahah not found.
+2021:11:23 14:32:43 dir command received from client.
+2021:11:23 14:32:43 .vscode
+svr_access_log.txt
+myftp.c
+.git
+protocol.c
+makefile
+myftpd
+protocol.o
+protocol.h
+README.md
+myftpd.o
+myftpd.c
+ sent to the client.
+2021:11:23 14:32:53 End of process
