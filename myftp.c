@@ -7,7 +7,12 @@
  */
 
 #include <stdio.h>
+#include "protocol.h"
 
+// functions declarations
+
+
+// main begins here
 int main()
 {
 
