@@ -15,7 +15,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#include <dirent.h>
+#include <dirent.h> //DIR, struct dirent
 #include <errno.h>
 #include <netdb.h>
 #include <signal.h>
@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "protocol.h"
+#include "protocol.h" //readContent,writeContent
 
 void claim_children();
 int daemon_init();
@@ -55,7 +55,6 @@ void claim_children()
     { /* claim as many zombies as we can */
         pid = waitpid(0, (int *)0, WNOHANG);
     }
-    
     fprintf(svrAccessLog, "%s End of process\n", childTime);
     fflush(svrAccessLog);
 }
@@ -163,6 +162,8 @@ int startServerProg(int argumentCount, char *argumentValue[])
         else if (pid > 0)
         {
             close(cliConnSocket);
+            fprintf(svrAccessLog, "%s Client pid = %d\n", programTime, pid);
+            fflush(svrAccessLog);
             continue;
         }
         close(serverSocket);
@@ -248,8 +249,8 @@ void pwdCommand(int cliSocket)
     getcwd(currentPathName, sizeof(currentPathName));
     writeContent(cliSocket, currentPathName, strlen(currentPathName));
 
-    fprintf(svrAccessLog, "%s pwd command received from client.\n", pwdTime);
-    fprintf(svrAccessLog, "%s %s sent to the client.\n", pwdTime, currentPathName);
+    fprintf(svrAccessLog, "%s pwd command received from client %d\n", pwdTime, getpid());
+    fprintf(svrAccessLog, "%s %s sent to the client %d\n", pwdTime, currentPathName, getpid());
     fflush(svrAccessLog);
 }
 
@@ -281,8 +282,8 @@ void dirCommand(int cliSocket)
     writeContent(cliSocket, fileList, strlen(fileList));
     closedir(d);
 
-    fprintf(svrAccessLog, "%s dir command received from client.\n", dirTime);
-    fprintf(svrAccessLog, "%s %ssent to the client.\n", dirTime, fileList);
+    fprintf(svrAccessLog, "%s dir command received from client %d\n", dirTime,getpid());
+    fprintf(svrAccessLog, "%s %ssent to the client %d\n", dirTime, fileList,getpid());
     fflush(svrAccessLog);
 }
 
@@ -333,12 +334,12 @@ void cdCommand(int cliSocket)
     writeContent(cliSocket, replyClient, strlen(replyClient));
     if (count == 2)
     {
-        fprintf(svrAccessLog, "%s Directory %s not found.\n", cdTime, argument);
+        fprintf(svrAccessLog, "%s Directory %s not found, client %d\n", cdTime, argument,getpid());
         fflush(svrAccessLog);
     }
     else
     {
-        fprintf(svrAccessLog, "%s %s is the current directory.\n", cdTime, replyClient);
+        fprintf(svrAccessLog, "%s %s is the current directory, client %d\n", cdTime, replyClient,getpid());
         fflush(svrAccessLog);
     }
 }
@@ -395,13 +396,13 @@ void getCommand(int cliSocket)
             writeContent(cliSocket, EOF_MESSAGE, sizeof(EOF_MESSAGE));
         } //end if
         fclose(outputFile);
-        fprintf(svrAccessLog, "%s File %s sent to client successfully.\n", getTime, downloadFileName);
+        fprintf(svrAccessLog, "%s File %s sent to client %d successfully.\n", getTime, downloadFileName,getpid());
         fflush(svrAccessLog);
     }
     else
     {
         writeContent(cliSocket, FILE_NOT_FOUND, strlen(FILE_NOT_FOUND));
-        fprintf(svrAccessLog, "%s File %s not found.\n", getTime, downloadFileName);
+        fprintf(svrAccessLog, "%s File %s not found, client %d\n", getTime, downloadFileName,getpid());
         fflush(svrAccessLog);
     } //end if
     bzero(downloadFileName, sizeof(downloadFileName));
@@ -441,7 +442,7 @@ void putCommand(int cliSocket)
     {
         currentTime(putTime);
         writeContent(cliSocket, FILE_ALREADY_EXIST, strlen(FILE_ALREADY_EXIST));
-        fprintf(svrAccessLog, "%s %s existed on the server.\n", putTime, uploadFileName);
+        fprintf(svrAccessLog, "%s %s existed on the server, client %d\n", putTime, uploadFileName,getpid());
         fflush(svrAccessLog);
         bzero(uploadFileName, sizeof(uploadFileName));
     }
@@ -461,7 +462,7 @@ void putCommand(int cliSocket)
             readContent(cliSocket, newFileInServer, sizeof(newFileInServer));
         }
         fclose(inputFile);
-        fprintf(svrAccessLog, "%s File %s uploaded successfully to %s.\n", putTime, uploadFileName, currentPath);
+        fprintf(svrAccessLog, "%s File %s uploaded successfully to %s, client %d\n", putTime, uploadFileName, currentPath,getpid());
         fflush(svrAccessLog);
         bzero(uploadFileName, sizeof(uploadFileName));
         bzero(newFileInServer, sizeof(newFileInServer));
@@ -470,7 +471,7 @@ void putCommand(int cliSocket)
     {
         currentTime(putTime);
         writeContent(cliSocket, FILE_ERROR, strlen(FILE_ERROR));
-        fprintf(svrAccessLog, "%s Unexcepted error occured while uploading %s to %s.\n", putTime, uploadFileName, currentPath);
+        fprintf(svrAccessLog, "%s Unexcepted error occured while uploading %s to %s, client %d\n", putTime, uploadFileName, currentPath,getpid());
         fflush(svrAccessLog);
         bzero(uploadFileName, sizeof(uploadFileName));
     }

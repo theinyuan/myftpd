@@ -700,3 +700,106 @@ sent to the client.
 2021:11:23 17:52:34 End of process
 2021:11:23 17:52:34 SIGCHLD interrupted
 2021:11:23 17:52:36 End of process
+2021:11:24 00:15:02 server pid = 72615
+2021:11:24 00:15:02 Initialise server FTP program...
+2021:11:24 00:15:02 Socket created successfully and ready to accept connection from clients.
+2021:11:24 00:15:22 Client connected.
+2021:11:24 00:15:27 pwd command received from client 72652.
+2021:11:24 00:15:27 /root/ict374/assignment/assign2/myftpd sent to the client.
+2021:11:24 00:15:22 Client pid = 72615
+2021:11:24 00:15:49 Client connected.
+2021:11:24 00:15:50 pwd command received from client 72670.
+2021:11:24 00:15:50 /root/ict374/assignment/assign2/myftpd sent to the client.
+2021:11:24 00:15:49 Client pid = 72615
+2021:11:24 00:15:55 End of process 0
+2021:11:24 00:15:55 SIGCHLD interrupted
+2021:11:24 00:16:18 End of process -1
+2021:11:24 00:17:57 server pid = 72797
+2021:11:24 00:17:57 Initialise server FTP program...
+2021:11:24 00:17:57 Socket created successfully and ready to accept connection from clients.
+2021:11:24 00:18:03 Client connected.
+2021:11:24 00:18:03 Client pid = 72797
+2021:11:24 00:18:29 Client connected.
+2021:11:24 00:18:29 Client pid = 72797
+2021:11:24 00:18:37 pwd command received from client 72867.
+2021:11:24 00:18:37 /root/ict374/assignment/assign2/myftpd sent to the client 72867.
+2021:11:24 00:18:38 pwd command received from client 72831.
+2021:11:24 00:18:38 /root/ict374/assignment/assign2/myftpd sent to the client 72831.
+2021:11:24 00:18:47 End of process 72797
+2021:11:24 00:18:47 End of process 72797
+2021:11:24 00:18:47 SIGCHLD interrupted
+2021:11:24 00:18:51 End of process 72797
+2021:11:24 00:18:51 End of process 72797
+2021:11:24 00:20:01 server pid = 73140
+2021:11:24 00:20:01 Initialise server FTP program...
+2021:11:24 00:20:01 Socket created successfully and ready to accept connection from clients.
+2021:11:24 00:20:07 Client connected.
+2021:11:24 00:20:07 Client pid = 73175
+2021:11:24 00:20:15 Client connected.
+2021:11:24 00:20:15 Client pid = 73182
+2021:11:24 00:20:20 pwd command received from client 73182.
+2021:11:24 00:20:20 /root/ict374/assignment/assign2/myftpd sent to the client 73182.
+2021:11:24 00:20:24 pwd command received from client 73175.
+2021:11:24 00:20:24 /root/ict374/assignment/assign2/myftpd sent to the client 73175.
+2021:11:24 00:20:30 End of process 73140
+2021:11:24 00:20:30 SIGCHLD interrupted
+2021:11:24 00:20:38 End of process 73140
+2021:11:24 00:21:43 server pid = 73280
+2021:11:24 00:21:43 Initialise server FTP program...
+2021:11:24 00:21:43 Socket created successfully and ready to accept connection from clients.
+2021:11:24 00:21:48 Client connected.
+2021:11:24 00:21:48 Client pid = 73314
+2021:11:24 00:21:53 pwd command received from client 73314.
+2021:11:24 00:21:53 /root/ict374/assignment/assign2/myftpd sent to the client 73314.
+2021:11:24 00:21:56 End of process 1
+2021:11:24 00:26:54 server pid = 73620
+2021:11:24 00:26:54 Initialise server FTP program...
+2021:11:24 00:26:54 Socket created successfully and ready to accept connection from clients.
+2021:11:24 00:26:59 Client connected.
+2021:11:24 00:26:59 Client pid = 73655
+2021:11:24 00:27:02 dir command received from client 73655
+2021:11:24 00:27:02 .vscode
+svr_access_log.txt
+myftp.c
+.git
+protocol.c
+makefile
+myftpd
+protocol.o
+protocol.h
+README.md
+myftpd.o
+myftpd.c
+sent to the client 73655
+2021:11:24 00:27:04 Client connected.
+2021:11:24 00:27:04 Client pid = 73662
+2021:11:24 00:27:13 pwd command received from client 73662
+2021:11:24 00:27:13 /root/ict374/assignment/assign2/myftpd sent to the client 73662
+2021:11:24 00:27:18 pwd command received from client 73655
+2021:11:24 00:27:18 /root/ict374/assignment/assign2/myftpd sent to the client 73655
+2021:11:24 00:27:23 /root/ict374/assignment/assign2 is the current directory, client 73655
+2021:11:24 00:27:25 dir command received from client 73655
+2021:11:24 00:27:25 myftpd
+sent to the client 73655
+2021:11:24 00:27:54 dir command received from client 73662
+2021:11:24 00:27:54 .vscode
+svr_access_log.txt
+myftp.c
+.git
+protocol.c
+makefile
+myftpd
+protocol.o
+protocol.h
+README.md
+myftpd.o
+myftpd.c
+sent to the client 73662
+2021:11:24 00:27:57 /root/ict374/assignment is the current directory, client 73662
+2021:11:24 00:27:59 dir command received from client 73662
+2021:11:24 00:27:59 assign1
+assign2
+sent to the client 73662
+2021:11:24 00:28:11 End of process
+2021:11:24 00:28:11 SIGCHLD interrupted
+2021:11:24 00:28:14 End of process

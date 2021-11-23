@@ -24,11 +24,9 @@
 #define CREATE_SOCKET_FAILED -2
 #define BIND_FAILED -3
 #define CONNECT_FAILED -4
-#define SEND_FAILED -5
-#define RECEIVE_FAILED -6
-#define ACCEPT_FAILED -7
-#define FORK_ERROR -8
-#define PATH_ERROR -9
+#define ACCEPT_FAILED -5
+#define FORK_ERROR -6
+#define PATH_ERROR -7
 
 #define SERVER_FTP_PORT 40001
 #define serverQueue 5
