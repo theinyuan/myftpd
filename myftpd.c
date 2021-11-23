@@ -1,7 +1,8 @@
 /*
  *  File: myftpd.c (server program)
- *  Authors: Russell and TY
+ *  Authors: Thein Yuan Chang
  *  Date Start: 12 Nov 2021
+ *  Date End: 23 Nov 2021
  *  Purpose: Project 2 - A Simple File Transfer Protocol
  *  Description: a simple network protocol that can be used to download files from a remote site and to upload files to a remote site, and a client and a server programs that communicate using that protocol.
  */
@@ -39,8 +40,6 @@ void getCommand(int cliSocket);
 void putCommand(int cliSocket);
 
 FILE *svrAccessLog;
-FILE *outputFile;
-char *space = " ";
 
 int main(int argc, char *argv[])
 {
@@ -58,7 +57,7 @@ void claim_children()
     { /* claim as many zombies as we can */
         pid = waitpid(0, (int *)0, WNOHANG);
     }
-
+    
     fprintf(svrAccessLog, "%s End of process\n", childTime);
     fflush(svrAccessLog);
 }
@@ -94,7 +93,6 @@ int startServerProg(int argumentCount, char *argumentValue[])
     int socketStatus, serverSocket, cliConnSocket;
     char *accessLog = "svr_access_log.txt";
     char programTime[MAX_TIME] = "";
-    //char mesgFromUser[MAX_BLOCK_SIZE], commandFromMesg[MAX_BLOCK_SIZE], argumentFromMesg[MAX_BLOCK_SIZE], replyMessage[MAX_BLOCK_SIZE];
     socklen_t senderLen;
     pid_t pid;
 
@@ -358,14 +356,14 @@ void cdCommand(int cliSocket)
 
 void getCommand(int cliSocket)
 {
-    char getTime[MAX_TIME]="";
+    char getTime[MAX_TIME] = "";
     currentTime(getTime);
-    char uploadedFileName[MAX_BLOCK_SIZE]={0};
-    char currentPath[MAX_BLOCK_SIZE]={0};
-    int fileFound=0;
+    char downloadFileName[MAX_BLOCK_SIZE] = {0};
+    char currentPath[MAX_BLOCK_SIZE] = {0};
+    int fileFound = 0;
 
-    readContent(cliSocket,uploadedFileName,sizeof(uploadedFileName));
-    getcwd(currentPath,sizeof(currentPath));
+    readContent(cliSocket, downloadFileName, sizeof(downloadFileName));
+    getcwd(currentPath, sizeof(currentPath));
 
     DIR *d;
     struct dirent *currtDir;
@@ -377,46 +375,114 @@ void getCommand(int cliSocket)
         {
             if (strcmp(currtDir->d_name, ".") != 0 && strcmp(currtDir->d_name, "..") != 0)
             {
-                if(strcmp(currtDir->d_name,uploadedFileName)==0)
+                if (strcmp(currtDir->d_name, downloadFileName) == 0)
                 {
                     ++fileFound;
-                }//end if
-            }//end if
-        }//end while
-    }//end if
+                } //end if
+            }     //end if
+        }         //end while
+    }             //end if
 
     closedir(d);
-    bzero(currentPath,sizeof(currentPath));
+    bzero(currentPath, sizeof(currentPath));
 
-    if(fileFound>0)
+    if (fileFound > 0)
     {
-        writeContent(cliSocket,FILE_FOUND,strlen(FILE_FOUND));
-        char fileInServer[1000]={0};
-        outputFile=fopen(uploadedFileName,"r");
-        bzero(uploadedFileName,sizeof(uploadedFileName));
-        if(outputFile == NULL)
+        writeContent(cliSocket, FILE_FOUND, strlen(FILE_FOUND));
+        char fileInServer[1000] = {0};
+        FILE *outputFile;
+        outputFile = fopen(downloadFileName, "r");
+        if (outputFile == NULL)
         {
-            writeContent(cliSocket,FILE_ERROR,sizeof(FILE_ERROR));
-        } else
+            writeContent(cliSocket, FILE_ERROR, sizeof(FILE_ERROR));
+        }
+        else
         {
-            while((fread(fileInServer,sizeof(char),sizeof(outputFile),outputFile))>0)
+            while ((fread(fileInServer, sizeof(char), sizeof(outputFile), outputFile)) > 0)
             {
-                writeContent(cliSocket,fileInServer,strlen(fileInServer));
-                bzero(fileInServer,sizeof(fileInServer));
-            }//end while
-            writeContent(cliSocket,EOF_MESSAGE,sizeof(EOF_MESSAGE));
-        }//end if
+                writeContent(cliSocket, fileInServer, strlen(fileInServer));
+                bzero(fileInServer, sizeof(fileInServer));
+            } //end while
+            writeContent(cliSocket, EOF_MESSAGE, sizeof(EOF_MESSAGE));
+        } //end if
         fclose(outputFile);
-        fprintf(svrAccessLog,"%s File %s sent to client successfully.\n",getTime,uploadedFileName);
+        fprintf(svrAccessLog, "%s File %s sent to client successfully.\n", getTime, downloadFileName);
         fflush(svrAccessLog);
-    } else
+    }
+    else
     {
-        writeContent(cliSocket,FILE_NOT_FOUND,strlen(FILE_NOT_FOUND));
-        fprintf(svrAccessLog,"%s File %s not found.\n",getTime,uploadedFileName);
+        writeContent(cliSocket, FILE_NOT_FOUND, strlen(FILE_NOT_FOUND));
+        fprintf(svrAccessLog, "%s File %s not found.\n", getTime, downloadFileName);
         fflush(svrAccessLog);
-    }//end if
+    } //end if
+    bzero(downloadFileName, sizeof(downloadFileName));
 }
 
 void putCommand(int cliSocket)
 {
+    char putTime[MAX_TIME] = "";
+    char uploadFileName[MAX_BLOCK_SIZE] = {0};
+    int duplicateFile = 0;
+    readContent(cliSocket, uploadFileName, sizeof(uploadFileName));
+
+    char currentPath[MAX_BLOCK_SIZE] = {0};
+    getcwd(currentPath, sizeof(currentPath));
+
+    DIR *d;
+    struct dirent *currtDir;
+    d = opendir(currentPath);
+
+    if (d)
+    {
+        while ((currtDir = readdir(d)) != NULL)
+        {
+            if (strcmp(currtDir->d_name, ".") != 0 && strcmp(currtDir->d_name, "..") != 0)
+            {
+                if (strcmp(currtDir->d_name, uploadFileName) == 0)
+                {
+                    ++duplicateFile;
+                } //end if
+            }     //end if
+        }         //end while
+    }             //end if
+
+    closedir(d);
+
+    if (duplicateFile > 0)
+    {
+        currentTime(putTime);
+        writeContent(cliSocket, FILE_ALREADY_EXIST, strlen(FILE_ALREADY_EXIST));
+        fprintf(svrAccessLog, "%s %s existed on the server.\n", putTime, uploadFileName);
+        fflush(svrAccessLog);
+        bzero(uploadFileName, sizeof(uploadFileName));
+    }
+    else if (duplicateFile == 0)
+    {
+        currentTime(putTime);
+        writeContent(cliSocket, FILE_NO_CONFLICT, strlen(FILE_NO_CONFLICT));
+        char newFileInServer[MAX_BLOCK_SIZE];
+        FILE *inputFile;
+        inputFile = fopen(uploadFileName, "w");
+
+        readContent(cliSocket, newFileInServer, sizeof(newFileInServer));
+        while (strcmp(newFileInServer, EOF_MESSAGE) != 0)
+        {
+            fwrite(newFileInServer, sizeof(char), strlen(newFileInServer), inputFile);
+            bzero(newFileInServer, sizeof(newFileInServer));
+            readContent(cliSocket, newFileInServer, sizeof(newFileInServer));
+        }
+        fclose(inputFile);
+        fprintf(svrAccessLog, "%s File %s uploaded successfully to %s.\n", putTime, uploadFileName, currentPath);
+        fflush(svrAccessLog);
+        bzero(uploadFileName, sizeof(uploadFileName));
+        bzero(newFileInServer, sizeof(newFileInServer));
+    }
+    else
+    {
+        currentTime(putTime);
+        writeContent(cliSocket, FILE_ERROR, strlen(FILE_ERROR));
+        fprintf(svrAccessLog, "%s Unexcepted error occured while uploading %s to %s.\n", putTime, uploadFileName, currentPath);
+        fflush(svrAccessLog);
+        bzero(uploadFileName, sizeof(uploadFileName));
+    }
 }

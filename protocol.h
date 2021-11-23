@@ -10,7 +10,7 @@
 
 #define EXCEEDED_ALLOWED_SIZE 2
 
-#define EOF_MESSAGE "30FM5G" //opcode in 6 byte representing end of file
+#define EOF_MESSAGE "602218" //opcode in 6 byte representing end of file
 #define FILE_ERROR "2"
 
 #define FILE_ALREADY_EXIST "1" //for put command
@@ -31,7 +31,7 @@
 #define PATH_ERROR -9
 
 #define SERVER_FTP_PORT 40001
-#define serverQueue 100
+#define serverQueue 5
 
 #define MAX_TIME 256
 #define MAX_BLOCK_SIZE (1024*5)

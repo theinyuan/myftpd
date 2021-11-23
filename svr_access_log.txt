@@ -567,3 +567,74 @@ myftpd.c
 sent to the client.
 2021:11:23 15:33:44 File makefile sent to client successfully.
 2021:11:23 15:33:52 End of process
+2021:11:23 15:37:03 server pid = 62547
+2021:11:23 15:37:03 Initialise server FTP program...
+2021:11:23 15:37:03 Socket created successfully and ready to accept connection from clients.
+2021:11:23 15:37:09 Client connected.
+2021:11:23 15:37:11 dir command received from client.
+2021:11:23 15:37:11 .vscode
+svr_access_log.txt
+myftp.c
+.git
+protocol.c
+makefile
+myftpd
+protocol.o
+protocol.h
+README.md
+myftpd.o
+myftpd.c
+sent to the client.
+2021:11:23 15:37:27 File  sent to client successfully.
+2021:11:23 15:37:43 End of process
+2021:11:23 17:03:33 server pid = 64675
+2021:11:23 17:03:33 Initialise server FTP program...
+2021:11:23 17:03:33 Socket created successfully and ready to accept connection from clients.
+2021:11:23 17:11:36 server pid = 64936
+2021:11:23 17:11:36 Initialise server FTP program...
+2021:11:23 17:11:36 Socket created successfully and ready to accept connection from clients.
+2021:11:23 17:11:42 Client connected.
+2021:11:23 17:11:42 End of process
+2021:11:23 17:11:42 SIGCHLD interrupted
+2021:11:23 17:11:59 Client connected.
+2021:11:23 17:11:59 End of process
+2021:11:23 17:13:28 server pid = 65177
+2021:11:23 17:13:28 Initialise server FTP program...
+2021:11:23 17:13:28 Socket created successfully and ready to accept connection from clients.
+2021:11:23 17:13:31 Client connected.
+2021:11:23 17:13:31 End of process
+2021:11:23 17:16:56 server pid = 65367
+2021:11:23 17:16:56 Initialise server FTP program...
+2021:11:23 17:16:56 Socket created successfully and ready to accept connection from clients.
+2021:11:23 17:17:03 Client connected.
+2021:11:23 17:17:07 dir command received from client.
+2021:11:23 17:17:07 .vscode
+svr_access_log.txt
+myftp.c
+.git
+protocol.c
+makefile
+myftpd
+protocol.o
+protocol.h
+README.md
+myftpd.o
+myftpd.c
+sent to the client.
+2021:11:23 17:17:16 File makefile sent to client successfully.
+2021:11:23 17:17:31 File testClient uploaded successfully to /root/ict374/assignment/assign2/myftpd.
+2021:11:23 17:17:52 File hahaha not found.
+2021:11:23 17:18:05 End of process
+2021:11:23 17:18:05 SIGCHLD interrupted
+2021:11:23 17:20:34 Client connected.
+2021:11:23 17:21:19 File TEXT.docx uploaded successfully to /root/ict374/assignment/assign2/myftpd.
+2021:11:23 17:21:41 pwd command received from client.
+2021:11:23 17:21:41 /root/ict374/assignment/assign2/myftpd sent to the client.
+2021:11:23 17:22:00 End of process
+2021:11:23 17:24:28 server pid = 66201
+2021:11:23 17:24:28 Initialise server FTP program...
+2021:11:23 17:24:28 Socket created successfully and ready to accept connection from clients.
+2021:11:23 17:24:46 Client connected.
+2021:11:23 17:25:10 File TEXT.docx uploaded successfully to /root/ict374/assignment/assign2/myftpd.
+2021:11:23 17:25:55 TEXT.docx existed on the server.
+2021:11:23 17:26:20 End of process
