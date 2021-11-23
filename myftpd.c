@@ -131,8 +131,7 @@ int startServerProg(int argumentCount, char *argumentValue[])
     {
         currentTime(programTime);
         senderLen = sizeof(sender);
-        struct sockaddr *sender_addr = (struct sockaddr *)sender;
-        cliConnSocket = accept(serverSocket, sender_addr, (socklen_t *)&senderLen);
+        cliConnSocket = accept(serverSocket, (struct sockaddr *)sender, &senderLen);
         if (cliConnSocket < 0)
         {
             if (errno == EINTR)
@@ -142,7 +141,6 @@ int startServerProg(int argumentCount, char *argumentValue[])
             }
 
             perror("Error in accepting connection from clients: ");
-            printf("Program is terminating...\n");
             close(serverSocket);
             return ACCEPT_FAILED;
         }
@@ -256,12 +254,10 @@ int initServerProg(int *socketNum, char *initTime)
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
         perror("Failed to create socket");
-        fprintf(svrAccessLog, "%s Failed to create socket\n", initTime);
-        fflush(svrAccessLog);
         return (CREATE_SOCKET_FAILED);
     }
 
-    memset((char *)&serverAddr, 0, sizeof(serverAddr));
+    bzero((char *)&serverAddr, sizeof(serverAddr));
 
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -270,9 +266,6 @@ int initServerProg(int *socketNum, char *initTime)
     if (bind(sock, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0)
     {
         perror("Unable to bind socket to the server IP");
-        fprintf(svrAccessLog, "%s Unable to bind socket to the server IP\n", initTime);
-        fflush(svrAccessLog);
-        close(sock);
         return (BIND_FAILED);
     }
 

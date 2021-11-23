@@ -30,4 +30,7 @@
 #define MAX_TIME 256
 #define MAX_BLOCK_SIZE (1024*5)
 
+int readContent(int fd, char *buf, int bufsize);
+int writeContent(int fd, char *buf, int nbytes);
+
 #endif
