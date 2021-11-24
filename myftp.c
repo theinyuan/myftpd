@@ -120,6 +120,10 @@ int startClientProg(int argumentCount, char *argumentValue[])
                     close(sd);
                 }
             }
+            else if(strcmp(cmd, "get") == 0)
+            {
+                // to insert code here
+            }
         }
     } while (strcmp(input, "quit") != 0);
 
