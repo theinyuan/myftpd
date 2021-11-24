@@ -52,7 +52,7 @@ int startClientProg(int argumentCount, char *argumentValue[])
     }    
 
     // starting myftp
-    socketStatus = initClientProg("157.230.36.227", &cliConnSocket);
+    socketStatus = initClientProg("russell-VirtualBox", &cliConnSocket);
     if(socketStatus != 0)
     {
         printf("Failed to connect to the server. Terminating Program.\n");
@@ -110,7 +110,7 @@ int initClientProg(char *serverName, int *socketNum)
         return(INVALID_HOST_NAME);
     }
 
-    if((sock = socket(AF_INET, SOCK_STREAM, 0) < 0))
+    if((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
         perror("Failed to create socket");
         return(CREATE_SOCKET_FAILED);

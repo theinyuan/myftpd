@@ -806,3 +806,9 @@ sent to the client 73662
 2021:11:24 14:41:23 server pid = 16484
 2021:11:24 14:41:23 Initialise server FTP program...
 2021:11:24 14:41:23 Socket created successfully and ready to accept connection from clients.
+2021:11:24 15:24:17 server pid = 19266
+2021:11:24 15:24:17 Initialise server FTP program...
+2021:11:24 15:24:17 Socket created successfully and ready to accept connection from clients.
+2021:11:24 15:37:50 Client connected.
+2021:11:24 15:37:50 Client pid = 19774
+2021:11:24 15:38:21 End of process
