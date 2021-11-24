@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 int startClientProg(int argumentCount, char *argumentValue[])
 {
     int cliConnSocket, socketStatus, nr, nw, i;
-    char input[MAX_BLOCK_SIZE], host[60];
+    char input[MAX_BLOCK_SIZE], cmd[MAX_BLOCK_SIZE], arg[MAX_BLOCK_SIZE], host[60];
 
     if(argumentCount == 1)
     {
@@ -64,12 +64,14 @@ int startClientProg(int argumentCount, char *argumentValue[])
         printf("> ");
         fgets(input, sizeof(input), stdin);
         nr = strlen(input);
+        socketStatus = writeContent(cliConnSocket, input, strlen(input)+1);
+
         if(input[nr-1] == '\n')
         {
             input[nr-1] = '\0'; // stripping newline
         }
 
-        if((nw = writeContent(socketStatus, input, nr)) < nr)
+        /* if((nw = writeContent(socketStatus, input, nr)) < nr)
         {
             printf("Client: Send Error\n");
             exit(1);
@@ -79,10 +81,46 @@ int startClientProg(int argumentCount, char *argumentValue[])
         {
             printf("Client: Receive Error\n");
             exit(1);
+        } */
+
+        if(strstr(input, " ") != NULL)
+        {
+            strcpy(cmd, strtok(input, " "));
+            strcpy(arg, strtok(NULL, " "));
+            if(strcmp(cmd, "put") == 0)
+            {
+                FILE *aFile;
+                char buffer[MAX_BLOCK_SIZE];
+                int nBytes = 0;
+                int sd;
+
+                socketStatus = retrieveDataSocket(&sd);
+                if(socketStatus != OK)
+                {
+                    printf("No");
+                }
+                sd = accept(sd, NULL, NULL);
+                aFile = fopen(arg, "r");
+                if(aFile != NULL){
+                    while(!feof(aFile))
+                    {
+                        nBytes = fread(buffer, sizeof(char), MAX_BLOCK_SIZE, aFile);
+                        socketStatus = writeContent(sd, buffer, strlen(buffer)+1);
+                        if(socketStatus != OK)
+                        {
+                            break;
+                        } // end of if
+                    } // end of whole
+                    close(sd);
+                    fclose(aFile);
+                } // end of if
+                else
+                {
+                    printf("File does not exist\n");
+                    close(sd);
+                }
+            }
         }
-        i++;
-        printf("Server Output[%d]: %s", i, input);
-        
     } while (strcmp(input, "quit") != 0);
 
     close(cliConnSocket);
