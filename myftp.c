@@ -62,39 +62,33 @@ int startClientProg(int argumentCount, char *argumentValue[])
     do
     {
         printf("> ");
-        fgets(input, sizeof(input), stdin); // reading user input and storing into input
+        fgets(input, sizeof(input), stdin);
         nr = strlen(input);
         if(input[nr-1] == '\n')
         {
-            input[nr-1] = '\0';
-            nr--;
+            input[nr-1] = '\0'; // stripping newline
         }
 
-        if(nr > 0)
+        if((nw = writeContent(socketStatus, input, nr)) < nr)
         {
-            if((nw = writeContent(socketStatus, input, nr)) < nr)
-            {
-                printf("Client: Send Error\n");
-                exit(1);
-            }
-
-            if((nr = readContent(socketStatus, input, sizeof(input))) <= 0)
-            {
-                printf("Client: Receive Error\n");
-                exit(1);
-            }
-
-            input[nr] ='\0';
-            i++;
-            printf("Server Output[%d]: %s\n", i, input);
+            printf("Client: Send Error\n");
+            exit(1);
         }
 
+        if((nr = readContent(socketStatus, input, sizeof(input))) < 0)
+        {
+            printf("Client: Receive Error\n");
+            exit(1);
+        }
+        i++;
+        printf("Server Output[%d]: %s", i, input);
+        
     } while (strcmp(input, "quit") != 0);
 
     close(cliConnSocket);
 
     printf("You are now exiting the client. Goodbye!\n");
-    return(socketStatus);
+    exit(socketStatus);
 }
 
 int initClientProg(char *serverName, int *socketNum)

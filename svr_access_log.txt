@@ -812,3 +812,61 @@ sent to the client 73662
 2021:11:24 15:37:50 Client connected.
 2021:11:24 15:37:50 Client pid = 19774
 2021:11:24 15:38:21 End of process
+2021:11:24 15:54:17 server pid = 20361
+2021:11:24 15:54:17 Initialise server FTP program...
+2021:11:24 15:54:17 Socket created successfully and ready to accept connection from clients.
+2021:11:24 15:54:20 Client connected.
+2021:11:24 15:54:20 Client pid = 20393
+2021:11:24 15:56:27 End of process
+2021:11:24 15:56:27 SIGCHLD interrupted
+2021:11:24 15:57:21 Client connected.
+2021:11:24 15:57:21 Client pid = 20636
+2021:11:24 15:59:09 End of process
+2021:11:24 15:59:09 SIGCHLD interrupted
+2021:11:24 15:59:20 Client connected.
+2021:11:24 15:59:20 Client pid = 20823
+2021:11:24 15:59:57 End of process
+2021:11:24 15:59:57 SIGCHLD interrupted
+2021:11:24 16:02:02 Client connected.
+2021:11:24 16:02:02 Client pid = 21015
+2021:11:24 16:02:03 End of process
+2021:11:24 16:02:03 SIGCHLD interrupted
+2021:11:24 16:06:03 Client connected.
+2021:11:24 16:06:03 Client pid = 21251
+2021:11:24 16:06:05 End of process
+2021:11:24 16:06:05 SIGCHLD interrupted
+2021:11:24 16:08:00 Client connected.
+2021:11:24 16:08:00 Client pid = 21404
+2021:11:24 16:08:13 End of process
+2021:11:24 16:08:13 SIGCHLD interrupted
+2021:11:24 16:08:31 Client connected.
+2021:11:24 16:08:31 Client pid = 21462
+2021:11:24 16:08:33 End of process
+2021:11:24 16:08:33 SIGCHLD interrupted
+2021:11:24 16:09:19 Client connected.
+2021:11:24 16:09:19 Client pid = 21546
+2021:11:24 16:09:26 End of process
+2021:11:24 16:09:26 SIGCHLD interrupted
+2021:11:24 16:10:25 Client connected.
+2021:11:24 16:10:25 Client pid = 21683
+2021:11:24 16:10:27 End of process
+2021:11:24 16:10:27 SIGCHLD interrupted
+2021:11:24 16:10:44 Client connected.
+2021:11:24 16:10:44 Client pid = 21767
+2021:11:24 16:10:45 End of process
+2021:11:24 16:10:45 SIGCHLD interrupted
+2021:11:24 16:11:55 Client connected.
+2021:11:24 16:11:55 Client pid = 21859
+2021:11:24 16:11:56 End of process
+2021:11:24 16:11:56 SIGCHLD interrupted
+2021:11:24 16:13:26 Client connected.
+2021:11:24 16:13:26 Client pid = 22002
+2021:11:24 16:13:29 End of process
+2021:11:24 16:13:29 SIGCHLD interrupted
+2021:11:24 16:38:53 Client connected.
+2021:11:24 16:38:53 Client pid = 22640
+2021:11:24 16:39:15 End of process
+2021:11:24 16:39:15 SIGCHLD interrupted
+2021:11:24 16:39:19 Client connected.
+2021:11:24 16:39:19 Client pid = 22718
+2021:11:24 16:39:30 End of process
