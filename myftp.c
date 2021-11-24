@@ -15,12 +15,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <netdb.h>
+#include <unistd.h>
 
 #include "protocol.h"
 
 // functions declarations
 int startClientProg(int argumentCount, char *argumentValue[]);
-int initClientProg(int *serverName, int *socketNum);
+int initClientProg(char *serverName, int *socketNum);
 int retrieveDataSocket(int *socketNum);
 
 // main begins here
@@ -35,7 +36,21 @@ int startClientProg(int argumentCount, char *argumentValue[])
 {
     int cliConnSocket, socketStatus, nr, nw, i;
     char input[MAX_BLOCK_SIZE], host[60];
-    
+
+    if(argumentCount == 1)
+    {
+        gethostname(host, sizeof(host));
+    }
+    else if(argumentCount == 2)
+    {
+        strcpy(host, argumentValue[1]);
+    }
+    else
+    {
+        printf("Usage: %s [<server_host_name>]\n", argumentValue[0]);
+        exit(1);
+    }    
+
     // starting myftp
     socketStatus = initClientProg("157.230.36.227", &cliConnSocket);
     if(socketStatus != 0)
@@ -57,13 +72,13 @@ int startClientProg(int argumentCount, char *argumentValue[])
 
         if(nr > 0)
         {
-            if((nw=writeContent(socketStatus, input, nr)) < nr)
+            if((nw = writeContent(socketStatus, input, nr)) < nr)
             {
                 printf("Client: Send Error\n");
                 exit(1);
             }
 
-            if((nr =readContent(socketStatus, input, sizeof(input))) <= 0)
+            if((nr = readContent(socketStatus, input, sizeof(input))) <= 0)
             {
                 printf("Client: Receive Error\n");
                 exit(1);
@@ -78,18 +93,18 @@ int startClientProg(int argumentCount, char *argumentValue[])
 
     close(cliConnSocket);
 
-    print("You are now exiting the client. Goodbye!\n");
+    printf("You are now exiting the client. Goodbye!\n");
     return(socketStatus);
 }
 
-int initClientProg(int *serverName, int *socketNum)
+int initClientProg(char *serverName, int *socketNum)
 {
     int sock;
     struct sockaddr_in clientAddr;
     struct sockaddr_in serverAddr;
     struct hostent *hostport;
 
-    if((hostport = gethostbyname(serverName) == NULL))
+    if((hostport = gethostbyname(serverName)) == NULL)
     {
         printf("host %s not found.\n", serverName);
         return(INVALID_HOST_NAME);

@@ -1,3 +1,5 @@
+all: myftpd myftp
+
 myftpd: myftpd.o protocol.o
 	gcc protocol.o myftpd.o -o myftpd
 

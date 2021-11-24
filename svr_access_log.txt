@@ -803,3 +803,6 @@ sent to the client 73662
 2021:11:24 00:28:11 End of process
 2021:11:24 00:28:11 SIGCHLD interrupted
 2021:11:24 00:28:14 End of process
+2021:11:24 14:41:23 server pid = 16484
+2021:11:24 14:41:23 Initialise server FTP program...
+2021:11:24 14:41:23 Socket created successfully and ready to accept connection from clients.
