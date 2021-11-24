@@ -22,7 +22,7 @@
 // functions declarations
 int startClientProg(int argumentCount, char *argumentValue[]);
 int initClientProg(char *serverName, int *socketNum);
-int retrieveDataSocket(int *socketNum);
+int sendInput(int socket, char *input, int nBytes);
 
 // main begins here
 int main(int argc, char *argv[])
@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 // functions implementation
 int startClientProg(int argumentCount, char *argumentValue[])
 {
-    int cliConnSocket, socketStatus, nr, nw, i;
+    int cliConnSocket, socketStatus, sd, nr, nw, i = 0;
     char input[MAX_BLOCK_SIZE], cmd[MAX_BLOCK_SIZE], arg[MAX_BLOCK_SIZE], host[60];
 
     if(argumentCount == 1)
@@ -52,7 +52,7 @@ int startClientProg(int argumentCount, char *argumentValue[])
     }    
 
     // starting myftp
-    socketStatus = initClientProg(host, &cliConnSocket);
+    socketStatus = initClientProg(host, &sd);
     if(socketStatus != 0)
     {
         printf("Failed to connect to the server. Terminating Program.\n");
@@ -64,24 +64,10 @@ int startClientProg(int argumentCount, char *argumentValue[])
         printf("> ");
         fgets(input, sizeof(input), stdin);
         nr = strlen(input);
-        socketStatus = writeContent(cliConnSocket, input, strlen(input)+1);
-
         if(input[nr-1] == '\n')
         {
             input[nr-1] = '\0'; // stripping newline
         }
-
-        /* if((nw = writeContent(socketStatus, input, nr)) < nr)
-        {
-            printf("Client: Send Error\n");
-            exit(1);
-        }
-
-        if((nr = readContent(socketStatus, input, sizeof(input))) < 0)
-        {
-            printf("Client: Receive Error\n");
-            exit(1);
-        } */
 
         if(strstr(input, " ") != NULL)
         {
@@ -94,7 +80,6 @@ int startClientProg(int argumentCount, char *argumentValue[])
                 int nBytes = 0;
                 int sd;
 
-                socketStatus = retrieveDataSocket(&sd);
                 if(socketStatus != OK)
                 {
                     // printf("");
@@ -122,7 +107,7 @@ int startClientProg(int argumentCount, char *argumentValue[])
             }
             else if(strcmp(cmd, "get") == 0)
             {
-                // to insert code here
+                // insert code here
             }
         }
     } while (strcmp(input, "quit") != 0);
@@ -136,11 +121,10 @@ int startClientProg(int argumentCount, char *argumentValue[])
 int initClientProg(char *serverName, int *socketNum)
 {
     int sock;
-    struct sockaddr_in clientAddr;
     struct sockaddr_in serverAddr;
-    struct hostent *hostport;
+    struct hostent *hp;
 
-    if((hostport = gethostbyname(serverName)) == NULL)
+    if((hp = gethostbyname(serverName)) == NULL)
     {
         printf("host %s not found.\n", serverName);
         return(INVALID_HOST_NAME);
@@ -152,23 +136,11 @@ int initClientProg(char *serverName, int *socketNum)
         return(CREATE_SOCKET_FAILED);
     }
 
-    bzero((char *)&clientAddr, sizeof(clientAddr));
-
-    clientAddr.sin_family = AF_INET;
-    clientAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    clientAddr.sin_port = 0;
-
-    if(bind(sock,(struct sockaddr *)&clientAddr, sizeof(clientAddr)) < 0)
-    {
-        perror("Unable to bind");
-        return(BIND_FAILED);
-    }
-
     bzero((char *)&serverAddr, sizeof(serverAddr));
 
     serverAddr.sin_family = AF_INET;
-    serverAddr.sin_addr.s_addr = * (u_long *) hostport->h_addr;
     serverAddr.sin_port = htons(SERVER_FTP_PORT);
+    serverAddr.sin_addr.s_addr = * (u_long *) hp->h_addr;
 
     if(connect(sock, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0)
     {
@@ -181,32 +153,15 @@ int initClientProg(char *serverName, int *socketNum)
     return(OK);
 }
 
-int retrieveDataSocket(int *socketNum)
+int sendInput(int socket, char *input, int nBytes)
 {
-    int sock;
-    struct sockaddr_in serverAddr;
+    int i;
 
-    if((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    if((send(socket, input, nBytes, 0)) < 0)
     {
-        perror("Failed to create socket");
-        return(CREATE_SOCKET_FAILED);
+        perror("Client: Send failure");
+        exit(1);
     }
-
-    bzero((char *)&serverAddr, sizeof(serverAddr));
-
-    serverAddr.sin_family = AF_INET;
-    serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    serverAddr.sin_port = htons(SERVER_FTP_PORT);
-
-    if(bind(sock,(struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0)
-    {
-        perror("Unable to bind socket to server IP");
-        return(BIND_FAILED);
-    }
-
-    listen(sock, serverQueue);
-
-    *socketNum = sock;
 
     return(OK);
 }
