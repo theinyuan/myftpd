@@ -886,3 +886,23 @@ sent to the client 73662
 2021:11:24 17:18:25 Client connected.
 2021:11:24 17:18:25 Client pid = 24167
 2021:11:24 17:18:29 End of process
+2021:11:24 17:18:29 SIGCHLD interrupted
+2021:11:24 17:20:11 Client connected.
+2021:11:24 17:20:11 Client pid = 24513
+2021:11:24 17:20:53 End of process
+2021:11:24 17:20:53 SIGCHLD interrupted
+2021:11:24 17:30:02 Client connected.
+2021:11:24 17:30:02 Client pid = 24919
+2021:11:24 17:30:55 End of process
+2021:11:24 17:30:55 SIGCHLD interrupted
+2021:11:24 17:30:57 Client connected.
+2021:11:24 17:30:57 Client pid = 25058
+2021:11:24 17:30:59 End of process
+2021:11:24 17:30:59 SIGCHLD interrupted
+2021:11:24 17:31:01 Client connected.
+2021:11:24 17:31:01 Client pid = 25089
+2021:11:24 17:31:38 End of process
+2021:11:24 17:31:38 SIGCHLD interrupted
+2021:11:24 17:31:43 Client connected.
+2021:11:24 17:31:43 Client pid = 25205
+2021:11:24 17:32:54 End of process

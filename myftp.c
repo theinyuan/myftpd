@@ -97,7 +97,7 @@ int startClientProg(int argumentCount, char *argumentValue[])
                 socketStatus = retrieveDataSocket(&sd);
                 if(socketStatus != OK)
                 {
-                    printf("No");
+                    // printf("");
                 }
                 sd = accept(sd, NULL, NULL);
                 aFile = fopen(arg, "r");
