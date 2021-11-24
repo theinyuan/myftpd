@@ -910,3 +910,7 @@ sent to the client 73662
 2021:11:24 17:41:59 Client connected.
 2021:11:24 17:41:59 Client pid = 26159
 2021:11:24 17:42:18 End of process
+2021:11:24 17:42:18 SIGCHLD interrupted
+2021:11:24 22:23:17 Client connected.
+2021:11:24 22:23:17 Client pid = 31137
+2021:11:24 22:24:17 End of process

@@ -52,7 +52,7 @@ int startClientProg(int argumentCount, char *argumentValue[])
     }    
 
     // starting myftp
-    socketStatus = initClientProg("russell-VirtualBox", &cliConnSocket);
+    socketStatus = initClientProg(host, &cliConnSocket);
     if(socketStatus != 0)
     {
         printf("Failed to connect to the server. Terminating Program.\n");
