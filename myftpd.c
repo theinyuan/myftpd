@@ -1,6 +1,6 @@
 /*
  *  File: myftpd.c (server program)
- *  Authors: Thein Yuan Chang
+ *  Authors: Russell Wong and Thein Yuan Chang
  *  Date Start: 12 Nov 2021
  *  Date End: 23 Nov 2021
  *  Purpose: Project 2 - A Simple File Transfer Protocol
