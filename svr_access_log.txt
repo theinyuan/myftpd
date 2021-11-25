@@ -954,3 +954,44 @@ sent to the client 73662
 2021:11:25 12:00:26 Client connected.
 2021:11:25 12:00:26 Client pid = 47753
 2021:11:25 12:01:21 End of process
+2021:11:25 12:01:21 SIGCHLD interrupted
+2021:11:25 18:15:44 Client connected.
+2021:11:25 18:15:44 Client pid = 55168
+2021:11:25 18:15:48 pwd command received from client 55168
+2021:11:25 18:15:48 /home/russell/myftpd sent to the client 55168
+2021:11:25 18:16:16 Directory get not found, client 55168
+2021:11:25 18:17:35 End of process
+2021:11:25 18:17:35 SIGCHLD interrupted
+2021:11:25 18:18:22 Client connected.
+2021:11:25 18:18:22 Client pid = 55595
+2021:11:25 18:29:01 server pid = 57831
+2021:11:25 18:29:01 Initialise server FTP program...
+2021:11:25 18:29:01 Socket created successfully and ready to accept connection from clients.
+2021:11:25 18:29:03 Client connected.
+2021:11:25 18:29:03 Client pid = 57852
+2021:11:25 18:31:07 End of process
+2021:11:25 18:31:07 SIGCHLD interrupted
+2021:11:25 18:31:10 Client connected.
+2021:11:25 18:31:10 Client pid = 58126
+2021:11:25 18:31:13 pwd command received from client 58126
+2021:11:25 18:31:13 /home/russell/myftpd sent to the client 58126
+2021:11:25 18:31:32 dir command received from client 58126
+2021:11:25 18:31:32 .git
+makefile
+pwd
+protocol.o
+myftpd.c
+protocol.h
+myftpd.o
+myftp.c
+svr_access_log.txt
+myftp
+README.md
+.vscode
+myftp.o
+protocol.c
+myftpd
+sent to the client 58126
+2021:11:25 18:31:52 File get not found, client 58126
+2021:11:25 18:32:13 File REA not found, client 58126
+2021:11:25 18:32:13 File REA not found, client 58126

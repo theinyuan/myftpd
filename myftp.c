@@ -23,7 +23,7 @@
 // functions declarations
 int startClientProg(int argumentCount, char *argumentValue[]);
 int initClientProg(char *serverName, int *socketNum);
-void extractCommands(int socketNum, char *input);
+void extractCommands(int socketNum, char *input, char cmd[], char arg[]);
 void putCommand(int serSocket, char cmd[], char param[]);
 void getCommand(int serSocket, char cmd[], char param[]);
 
@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 int startClientProg(int argumentCount, char *argumentValue[])
 {
     int cliConnSocket, socketStatus, sd, i = 0;
-    char input[MAX_BLOCK_SIZE], cmd[MAX_BLOCK_SIZE], arg[MAX_BLOCK_SIZE], reply[MAX_BLOCK_SIZE], host[60];
+    char input[MAX_BLOCK_SIZE], command[MAX_BLOCK_SIZE], argument[MAX_BLOCK_SIZE], reply[MAX_BLOCK_SIZE], host[60];
 
     if (argumentCount == 1)
     {
@@ -65,48 +65,7 @@ int startClientProg(int argumentCount, char *argumentValue[])
     do
     {
         printf("> ");
-        extractCommands(sd, input);
-        if (strstr(input, " ") != NULL)
-        {
-            strcpy(cmd, strtok(input, " "));
-            strcpy(arg, strtok(NULL, " "));
-            if (strcmp(cmd, "put") == 0)
-            {
-                FILE *aFile;
-                char buffer[MAX_BLOCK_SIZE];
-                int nBytes = 0;
-
-                if (socketStatus != OK)
-                {
-                    // printf("");
-                }
-                sd = accept(sd, NULL, NULL);
-                aFile = fopen(arg, "r");
-                if (aFile != NULL)
-                {
-                    while (!feof(aFile))
-                    {
-                        nBytes = fread(buffer, sizeof(char), MAX_BLOCK_SIZE, aFile);
-                        socketStatus = writeContent(sd, buffer, strlen(buffer) + 1);
-                        if (socketStatus != OK)
-                        {
-                            break;
-                        } // end of if
-                    }     // end of whole
-                    close(sd);
-                    fclose(aFile);
-                } // end of if
-                else
-                {
-                    printf("File does not exist\n");
-                    close(sd);
-                }
-            }
-            else if (strcmp(cmd, "get") == 0)
-            {
-                // insert code here
-            }
-        }
+        extractCommands(sd, input, command, argument);
     } while (strcmp(input, "quit") != 0);
 
     close(socketStatus);
@@ -150,15 +109,21 @@ int initClientProg(char *serverName, int *socketNum)
     return (OK);
 }
 
-void extractCommands(int socketNum, char *input)
+void extractCommands(int socketNum, char *input, char cmd[], char arg[])
 {
     int nr, nw;
-
     fgets(input, sizeof(input), stdin);
     nr = strlen(input);
+
     if (input[nr - 1] == '\n')
     {
         input[nr - 1] = '\0'; // stripping newline
+    }
+
+    if (strstr(input, " ") != NULL)
+    {
+        strcpy(cmd, strtok(input, " "));
+        strcpy(arg, strtok(NULL, " "));
     }
 
     if ((nw = writeContent(socketNum, input, nr)) < nr)
@@ -170,6 +135,15 @@ void extractCommands(int socketNum, char *input)
     {
         perror("Client Receive Error");
         exit(1);
+    }
+
+    if (strcmp(cmd, "put") == 0)
+    {
+        putCommand(socketNum, cmd, arg);
+    }
+    else if (strcmp(cmd, "get") == 0)
+    {
+        getCommand(socketNum, cmd, arg);
     }
 }
 
