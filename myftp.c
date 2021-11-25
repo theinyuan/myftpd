@@ -23,7 +23,7 @@
 // functions declarations
 int startClientProg(int argumentCount, char *argumentValue[]);
 int initClientProg(char *serverName, int *socketNum);
-void extractCommands(int socketNum, char *input, char cmd[], char arg[]);
+void processCommands(int socketNum, char *input, char cmd[], char arg[]);
 void putCommand(int serSocket, char cmd[], char param[]);
 void getCommand(int serSocket, char cmd[], char param[]);
 
@@ -37,8 +37,8 @@ int main(int argc, char *argv[])
 // functions implementation
 int startClientProg(int argumentCount, char *argumentValue[])
 {
-    int cliConnSocket, socketStatus, sd, i = 0;
-    char input[MAX_BLOCK_SIZE], command[MAX_BLOCK_SIZE], argument[MAX_BLOCK_SIZE], reply[MAX_BLOCK_SIZE], host[60];
+    int socketStatus, sd;
+    char userInput[MAX_BLOCK_SIZE], command[MAX_BLOCK_SIZE], argument[MAX_BLOCK_SIZE], host[MAX_BLOCK_SIZE];
 
     if (argumentCount == 1)
     {
@@ -62,15 +62,12 @@ int startClientProg(int argumentCount, char *argumentValue[])
         exit(socketStatus);
     }
 
-    do
+    while(1)
     {
         printf("> ");
-        extractCommands(sd, input, command, argument);
-    } while (strcmp(input, "quit") != 0);
+        processCommands(sd, userInput, command, argument);
+    }
 
-    close(socketStatus);
-
-    printf("You are now exiting the client. Goodbye!\n");
     return OK;
 }
 
@@ -109,42 +106,62 @@ int initClientProg(char *serverName, int *socketNum)
     return (OK);
 }
 
-void extractCommands(int socketNum, char *input, char cmd[], char arg[])
+void processCommands(int socketNum, char *input, char cmd[], char arg[])
 {
     int nr, nw;
-    fgets(input, sizeof(input), stdin);
+    fgets(input, MAX_BLOCK_SIZE, stdin);
     nr = strlen(input);
 
-    if (input[nr - 1] == '\n')
+    if(input[nr - 1] == '\n')
     {
         input[nr - 1] = '\0'; // stripping newline
+        nr--;
     }
 
-    if (strstr(input, " ") != NULL)
+    if(strcmp(input, "quit") == 0)
+    {
+        close(socketNum);
+        printf("You are now exiting the client. Goodbye!\n");
+        exit(OK);
+    }
+    else if(strstr(input, " ") != NULL)
     {
         strcpy(cmd, strtok(input, " "));
-        strcpy(arg, strtok(NULL, " "));
+        printf("%s\n", cmd);
+        strcpy(arg, strtok(NULL, "\0"));
+        printf("%s\n", arg);
     }
 
-    if ((nw = writeContent(socketNum, input, nr)) < nr)
+    if(strcmp(cmd, "cd") == 0)
     {
-        perror("Client Send Error");
-        exit(1);
+        // cdCommand(socketNum, cmd, arg);
     }
-    if ((nr = readContent(socketNum, input, sizeof(input))) <= 0)
-    {
-        perror("Client Receive Error");
-        exit(1);
-    }
-
-    if (strcmp(cmd, "put") == 0)
+         
+    if(strcmp(cmd, "put") == 0)
     {
         putCommand(socketNum, cmd, arg);
     }
-    else if (strcmp(cmd, "get") == 0)
+        
+    if(strcmp(cmd, "get") == 0)
     {
         getCommand(socketNum, cmd, arg);
     }
+
+    // if((nw = writeContent(socketNum, input, nr)) < nr)
+    // {
+        // perror("Client Send Error");
+        // exit(1);
+    // }
+
+    // if((nr = readContent(socketNum, input, sizeof(input))) <= 0)
+    // {
+        // perror("Client Receive Error");
+        // exit(1);
+    // }
+
+    input[nr] = '\0';
+    // printf("%s", input);
+    printf("\n");
 }
 
 void putCommand(int serSocket, char cmd[], char param[])
