@@ -11,6 +11,7 @@
 
 #include <netinet/in.h>
 
+#include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -23,6 +24,8 @@
 int startClientProg(int argumentCount, char *argumentValue[]);
 int initClientProg(char *serverName, int *socketNum);
 void extractCommands(int socketNum, char *input);
+void putCommand(int serSocket, char cmd[], char param[]);
+void getCommand(int serSocket, char cmd[], char param[]);
 
 // main begins here
 int main(int argc, char *argv[])
@@ -37,11 +40,11 @@ int startClientProg(int argumentCount, char *argumentValue[])
     int cliConnSocket, socketStatus, sd, i = 0;
     char input[MAX_BLOCK_SIZE], cmd[MAX_BLOCK_SIZE], arg[MAX_BLOCK_SIZE], reply[MAX_BLOCK_SIZE], host[60];
 
-    if(argumentCount == 1)
+    if (argumentCount == 1)
     {
         gethostname(host, sizeof(host));
     }
-    else if(argumentCount == 2)
+    else if (argumentCount == 2)
     {
         strcpy(host, argumentValue[1]);
     }
@@ -49,46 +52,47 @@ int startClientProg(int argumentCount, char *argumentValue[])
     {
         printf("Usage: %s [<server_host_name>]\n", argumentValue[0]);
         exit(1);
-    }    
+    }
 
     // starting myftp
     socketStatus = initClientProg(host, &sd);
-    if(socketStatus != 0)
+    if (socketStatus != 0)
     {
         printf("Failed to connect to the server. Terminating Program.\n");
-        exit(socketStatus); 
+        exit(socketStatus);
     }
 
     do
     {
         printf("> ");
         extractCommands(sd, input);
-        if(strstr(input, " ") != NULL)
+        if (strstr(input, " ") != NULL)
         {
             strcpy(cmd, strtok(input, " "));
             strcpy(arg, strtok(NULL, " "));
-            if(strcmp(cmd, "put") == 0)
+            if (strcmp(cmd, "put") == 0)
             {
                 FILE *aFile;
                 char buffer[MAX_BLOCK_SIZE];
                 int nBytes = 0;
 
-                if(socketStatus != OK)
+                if (socketStatus != OK)
                 {
                     // printf("");
                 }
                 sd = accept(sd, NULL, NULL);
                 aFile = fopen(arg, "r");
-                if(aFile != NULL){
-                    while(!feof(aFile))
+                if (aFile != NULL)
+                {
+                    while (!feof(aFile))
                     {
                         nBytes = fread(buffer, sizeof(char), MAX_BLOCK_SIZE, aFile);
-                        socketStatus = writeContent(sd, buffer, strlen(buffer)+1);
-                        if(socketStatus != OK)
+                        socketStatus = writeContent(sd, buffer, strlen(buffer) + 1);
+                        if (socketStatus != OK)
                         {
                             break;
                         } // end of if
-                    } // end of whole
+                    }     // end of whole
                     close(sd);
                     fclose(aFile);
                 } // end of if
@@ -98,7 +102,7 @@ int startClientProg(int argumentCount, char *argumentValue[])
                     close(sd);
                 }
             }
-            else if(strcmp(cmd, "get") == 0)
+            else if (strcmp(cmd, "get") == 0)
             {
                 // insert code here
             }
@@ -117,33 +121,33 @@ int initClientProg(char *serverName, int *socketNum)
     struct sockaddr_in serverAddr;
     struct hostent *hp;
 
-    if((hp = gethostbyname(serverName)) == NULL)
+    if ((hp = gethostbyname(serverName)) == NULL)
     {
         printf("host %s not found.\n", serverName);
-        return(INVALID_HOST_NAME);
+        return (INVALID_HOST_NAME);
     }
 
-    if((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
         perror("Failed to create socket");
-        return(CREATE_SOCKET_FAILED);
+        return (CREATE_SOCKET_FAILED);
     }
 
     bzero((char *)&serverAddr, sizeof(serverAddr));
 
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(SERVER_FTP_PORT);
-    serverAddr.sin_addr.s_addr = * (u_long *) hp->h_addr;
+    serverAddr.sin_addr.s_addr = *(u_long *)hp->h_addr;
 
-    if(connect(sock, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0)
+    if (connect(sock, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0)
     {
         perror("Failed to connect to server");
-        return(CONNECT_FAILED);
+        return (CONNECT_FAILED);
     }
 
     *socketNum = sock;
-    
-    return(OK);
+
+    return (OK);
 }
 
 void extractCommands(int socketNum, char *input)
@@ -152,19 +156,151 @@ void extractCommands(int socketNum, char *input)
 
     fgets(input, sizeof(input), stdin);
     nr = strlen(input);
-    if(input[nr-1] == '\n')
+    if (input[nr - 1] == '\n')
     {
-        input[nr-1] = '\0'; // stripping newline
+        input[nr - 1] = '\0'; // stripping newline
     }
 
-    if((nw = writeContent(socketNum, input, nr)) < nr)
+    if ((nw = writeContent(socketNum, input, nr)) < nr)
     {
         perror("Client Send Error");
         exit(1);
     }
-    if((nr = readContent(socketNum, input, sizeof(input))) <= 0)
+    if ((nr = readContent(socketNum, input, sizeof(input))) <= 0)
     {
         perror("Client Receive Error");
         exit(1);
+    }
+}
+
+void putCommand(int serSocket, char cmd[], char param[])
+{
+    char uploadFileName[1000] = {0};
+    char fileStatus[MAX_BLOCK_SIZE] = {0};
+    char currentPath[MAX_BLOCK_SIZE] = {0};
+    int similarName = 0;
+
+    getcwd(currentPath, sizeof(currentPath));
+
+    DIR *d;
+    struct dirent *currtDir;
+    d = opendir(currentPath);
+
+    if (d)
+    {
+        while ((currtDir = readdir(d)) != NULL)
+        {
+            if (strcmp(currtDir->d_name, ".") != 0 && strcmp(currtDir->d_name, "..") != 0)
+            {
+                if (strcmp(currtDir->d_name, param) == 0)
+                {
+                    similarName = 1;
+                }
+            }
+        }
+    }
+    closedir(d);
+
+    if (similarName > 0)
+    {
+        writeContent(serSocket, cmd, strlen(cmd));
+        writeContent(serSocket, param, strlen(param));
+        readContent(serSocket, fileStatus, sizeof(fileStatus));
+
+        if (strcmp(fileStatus, FILE_NO_CONFLICT) == 0)
+        {
+            FILE *uploadFile;
+            uploadFile = fopen(param, "r");
+            if (uploadFile == NULL)
+            {
+                printf("File error. Please try again.\n");
+            }
+
+            while ((fread(uploadFileName, sizeof(char), sizeof(uploadFileName), uploadFile)) > 0)
+            {
+                writeContent(serSocket, uploadFileName, strlen(uploadFileName));
+                bzero(uploadFileName, sizeof(uploadFileName));
+            }
+            printf("File %s uploaded successfully.\n", param);
+            writeContent(serSocket, EOF_MESSAGE, sizeof(EOF_MESSAGE));
+            fclose(uploadFile);
+        }
+        else if (strcmp(fileStatus, FILE_ALREADY_EXIST) == 0)
+        {
+            printf("File %s already exist in the server, please rename or choose another file.\n", param);
+        }
+        else
+        {
+            printf("Unexpected error occured, please try again later.\n");
+        }
+    }
+    else
+    {
+        printf("No such file as %s is found in your device, please choose another file.\n", param);
+    }
+}
+
+void getCommand(int serSocket, char cmd[], char param[])
+{
+    char currentPath[MAX_BLOCK_SIZE] = {0};
+    int similarName = 0;
+
+    DIR *d;
+    struct dirent *currtDir;
+    d = opendir(currentPath);
+
+    if (d)
+    {
+        while ((currtDir = readdir(d)) != NULL)
+        {
+            if (strcmp(currtDir->d_name, ".") != 0 && (strcmp(currtDir->d_name, "..") != 0))
+            {
+                if (strcmp(currtDir->d_name, param) == 0)
+                {
+                    similarName = 1;
+                }
+            }
+        }
+    }
+
+    closedir(d);
+
+    if (similarName == 0)
+    {
+        char fileStatus[MAX_BLOCK_SIZE] = {0};
+        char downloadFileName[MAX_BLOCK_SIZE] = {0};
+        writeContent(serSocket, cmd, strlen(cmd));
+        writeContent(serSocket, param, strlen(param));
+        readContent(serSocket, fileStatus, sizeof(fileStatus));
+        if (strcmp(fileStatus, FILE_NO_CONFLICT) == 0)
+        {
+            FILE *downloadFile;
+            downloadFile = fopen(param, "w");
+            readContent(serSocket, downloadFileName, sizeof(downloadFileName));
+            if (strcmp(downloadFileName, FILE_ERROR) == 0)
+            {
+                printf("Error downloading the file, please try again later.\n");
+            }
+            else
+            {
+                while (strcmp(downloadFileName, EOF_MESSAGE) != 0)
+                {
+                    fwrite(downloadFileName, sizeof(char), sizeof(downloadFileName), downloadFile);
+                    bzero(downloadFileName, sizeof(downloadFileName));
+                    readContent(serSocket, downloadFileName, sizeof(downloadFileName));
+                }
+                printf("File %s downloaded successfully.\n", downloadFileName);
+                bzero(downloadFileName, sizeof(downloadFileName));
+            }
+            fclose(downloadFile);
+        }
+        else
+        {
+            printf("File %s not found on the server, please try with another file.\n", param);
+        }
+    }
+    else
+    {
+        printf("The same file is existed in the device, please rename it and try again.\n");
     }
 }
