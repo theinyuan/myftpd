@@ -22,7 +22,7 @@
 // functions declarations
 int startClientProg(int argumentCount, char *argumentValue[]);
 int initClientProg(char *serverName, int *socketNum);
-int sendInput(int socket, char *input, int nBytes);
+void extractCommands(int socketNum, char *input);
 
 // main begins here
 int main(int argc, char *argv[])
@@ -34,8 +34,8 @@ int main(int argc, char *argv[])
 // functions implementation
 int startClientProg(int argumentCount, char *argumentValue[])
 {
-    int cliConnSocket, socketStatus, sd, nr, nw, i = 0;
-    char input[MAX_BLOCK_SIZE], cmd[MAX_BLOCK_SIZE], arg[MAX_BLOCK_SIZE], host[60];
+    int cliConnSocket, socketStatus, sd, i = 0;
+    char input[MAX_BLOCK_SIZE], cmd[MAX_BLOCK_SIZE], arg[MAX_BLOCK_SIZE], reply[MAX_BLOCK_SIZE], host[60];
 
     if(argumentCount == 1)
     {
@@ -62,13 +62,7 @@ int startClientProg(int argumentCount, char *argumentValue[])
     do
     {
         printf("> ");
-        fgets(input, sizeof(input), stdin);
-        nr = strlen(input);
-        if(input[nr-1] == '\n')
-        {
-            input[nr-1] = '\0'; // stripping newline
-        }
-
+        extractCommands(sd, input);
         if(strstr(input, " ") != NULL)
         {
             strcpy(cmd, strtok(input, " "));
@@ -78,7 +72,6 @@ int startClientProg(int argumentCount, char *argumentValue[])
                 FILE *aFile;
                 char buffer[MAX_BLOCK_SIZE];
                 int nBytes = 0;
-                int sd;
 
                 if(socketStatus != OK)
                 {
@@ -112,10 +105,10 @@ int startClientProg(int argumentCount, char *argumentValue[])
         }
     } while (strcmp(input, "quit") != 0);
 
-    close(cliConnSocket);
+    close(socketStatus);
 
     printf("You are now exiting the client. Goodbye!\n");
-    exit(socketStatus);
+    return OK;
 }
 
 int initClientProg(char *serverName, int *socketNum)
@@ -153,15 +146,25 @@ int initClientProg(char *serverName, int *socketNum)
     return(OK);
 }
 
-int sendInput(int socket, char *input, int nBytes)
+void extractCommands(int socketNum, char *input)
 {
-    int i;
+    int nr, nw;
 
-    if((send(socket, input, nBytes, 0)) < 0)
+    fgets(input, sizeof(input), stdin);
+    nr = strlen(input);
+    if(input[nr-1] == '\n')
     {
-        perror("Client: Send failure");
-        exit(1);
+        input[nr-1] = '\0'; // stripping newline
     }
 
-    return(OK);
+    if((nw = writeContent(socketNum, input, nr)) < nr)
+    {
+        perror("Client Send Error");
+        exit(1);
+    }
+    if((nr = readContent(socketNum, input, sizeof(input))) <= 0)
+    {
+        perror("Client Receive Error");
+        exit(1);
+    }
 }
