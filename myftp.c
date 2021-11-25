@@ -24,6 +24,10 @@
 int startClientProg(int argumentCount, char *argumentValue[]);
 int initClientProg(char *serverName, int *socketNum);
 void processCommands(int socketNum, char *input, char cmd[], char arg[]);
+void lpwdCommand();
+void ldirCommand();
+void lcdCommand(char arg[]);
+void cdCommand(int socketNum, char cmd[], char arg[]);
 void putCommand(int serSocket, char cmd[], char param[]);
 void getCommand(int serSocket, char cmd[], char param[]);
 
@@ -118,50 +122,156 @@ void processCommands(int socketNum, char *input, char cmd[], char arg[])
         nr--;
     }
 
-    if(strcmp(input, "quit") == 0)
+    if(nr > 0)
     {
-        close(socketNum);
-        printf("You are now exiting the client. Goodbye!\n");
-        exit(OK);
-    }
-    else if(strstr(input, " ") != NULL)
-    {
-        strcpy(cmd, strtok(input, " "));
-        printf("%s\n", cmd);
-        strcpy(arg, strtok(NULL, "\0"));
-        printf("%s\n", arg);
-    }
+        if(strcmp(input, "quit") == 0)
+        {
+            close(socketNum);
+            printf("You are now exiting the client. Goodbye!\n");
+            exit(OK);
+        }
 
-    if(strcmp(cmd, "cd") == 0)
-    {
-        // cdCommand(socketNum, cmd, arg);
-    }
-         
-    if(strcmp(cmd, "put") == 0)
-    {
-        putCommand(socketNum, cmd, arg);
-    }
+        if(strcmp(input, "lpwd") == 0)
+        {
+            // lpwd function here
+            lpwdCommand();
+            return;
+        }
+
+        if(strcmp(input, "ldir") == 0)
+        {
+            // ldir function here
+            ldirCommand();
+            return;
+        }
         
-    if(strcmp(cmd, "get") == 0)
+        if(strstr(input, " ") != NULL)
+        {
+            strcpy(cmd, strtok(input, " "));
+            // printf("%s\n", cmd); // printf to test and verify tokenizer to cmd[]
+            strcpy(arg, strtok(NULL, "\0"));
+            // printf("%s\n", arg); // printf to test and verify tokenizer to arg[]
+
+            // cd command
+            if(strcmp(cmd, "cd") == 0)
+            {
+                cdCommand(socketNum, cmd, arg);
+                bzero(cmd, strlen(cmd));
+            }
+
+            // lcd command
+            if(strcmp(input, "lcd") == 0)
+            {
+                // lcd function here
+                lcdCommand(arg);
+                return;
+            }
+            
+            // put filename command
+            if(strcmp(cmd, "put") == 0)
+            {
+                putCommand(socketNum, cmd, arg);
+            }
+            
+            // get filename command
+            if(strcmp(cmd, "get") == 0)
+            {
+                getCommand(socketNum, cmd, arg);
+            }
+        }
+
+        if((nw = writeContent(socketNum, input, nr)) < nr)
+        {
+            perror("Client Send Error");
+            exit(1);
+        }
+
+        if((nr = readContent(socketNum, input, MAX_BLOCK_SIZE)) <= 0)
+        {
+            perror("Client Receive Error");
+            exit(1);
+        }
+
+        input[nr] = '\0';
+        printf("%s", input);
+        printf("\n");
+    }
+}
+
+void lpwdCommand()
+{
+    char cwd[MAX_BLOCK_SIZE];
+    
+    if(getcwd(cwd, sizeof(cwd)) == NULL)
     {
-        getCommand(socketNum, cmd, arg);
+        perror("getcwd() error");
+    }
+    else
+    {
+        printf("%s\n", cwd);
+    }
+}
+
+void ldirCommand()
+{
+    char cwd[MAX_BLOCK_SIZE];
+    char fileNameInDir[MAX_BLOCK_SIZE];
+    char fileList[MAX_BLOCK_SIZE];
+    getcwd(cwd, sizeof(cwd));
+
+    DIR *d;
+    struct dirent *currtDir;
+    d = opendir(cwd);
+
+    if (d)
+    {
+        while ((currtDir = readdir(d)) != NULL)
+        {
+            if (strcmp(currtDir->d_name, ".") != 0 && strcmp(currtDir->d_name, "..") != 0)
+            {
+                strcpy(fileNameInDir, currtDir->d_name);
+                strcat(fileList, fileNameInDir);
+                strcat(fileList, "\n");
+            }
+        }
+    }
+    printf("%s\n", fileList);
+    closedir(d);
+}
+
+void lcdCommand(char arg[])
+{
+    char argument[MAX_BLOCK_SIZE];
+    char currentDir[MAX_BLOCK_SIZE];
+
+    if(strcmp(argument, ".") == 0)
+    {
+        getcwd(currentDir, sizeof(currentDir));
+        printf("%s\n", currentDir);
     }
 
-    // if((nw = writeContent(socketNum, input, nr)) < nr)
-    // {
-        // perror("Client Send Error");
-        // exit(1);
-    // }
+    if(strcmp(argument, "~") == 0)
+    {
+        chdir(getenv("HOME"));
+        getcwd(currentDir, sizeof(currentDir));
+        printf("%s", currentDir);
+    }
 
-    // if((nr = readContent(socketNum, input, sizeof(input))) <= 0)
-    // {
-        // perror("Client Receive Error");
-        // exit(1);
-    // }
+    if(chdir(argument) < 0)
+    {
+        strcat(currentDir, "Directory not found!");
+    }
+    else
+    {
+        getcwd(currentDir, sizeof(currentDir));
+        printf("%s", currentDir);
+    }
+}
 
-    input[nr] = '\0';
-    // printf("%s", input);
-    printf("\n");
+void cdCommand(int socketNum, char cmd[], char arg[])
+{
+    writeContent(socketNum, cmd, strlen(cmd));
+    writeContent(socketNum, arg, strlen(arg));
 }
 
 void putCommand(int serSocket, char cmd[], char param[])
