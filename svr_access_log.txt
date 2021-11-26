@@ -348,26 +348,62 @@ boot  etc  lab8  lib32	libx32	media	    opt  root  sbin  srv   tmp	var
 2021:11:23 13:39:27 pwd command received from client 1.
 2021:11:23 13:39:27 /root/ict374/assignment/assign2/myftpd sent to the client 1.
 2021:11:23 13:39:43 End of process
-2021:11:23 13:39:43 SIGCHLD interrupted
-2021:11:23 13:39:47 End of process
-2021:11:23 13:42:10 server pid = 57222
-2021:11:23 13:42:10 Initialise server FTP program...
-2021:11:23 13:42:10 Socket created successfully and ready to accept connection from clients.
-2021:11:23 13:42:14 Client connected.
-2021:11:23 13:42:15 pwd command received from client 0.
-2021:11:23 13:42:15 /root/ict374/assignment/assign2/myftpd sent to the client 0.
-2021:11:23 13:42:17 pwd command received from client 0.
-2021:11:23 13:42:17 /root/ict374/assignment/assign2/myftpd sent to the client 0.
-2021:11:23 13:42:20 Client connected.
-2021:11:23 13:42:21 pwd command received from client 0.
-2021:11:23 13:42:21 /root/ict374/assignment/assign2/myftpd sent to the client 0.
-2021:11:23 13:42:22 pwd command received from client 0.
-2021:11:23 13:42:22 /root/ict374/assignment/assign2/myftpd sent to the client 0.
-2021:11:23 13:42:24 End of process
-2021:11:23 13:42:24 SIGCHLD interrupted
-2021:11:23 13:42:26 End of process
-2021:11:23 13:43:51 server pid = 57340
-2021:11:23 13:43:51 Initialise server FTP program...
-2021:11:23 13:43:51 Socket created successfully and ready to accept connection from clients.
-2021:11:23 13:43:58 Client connected.
-2021:11:23 13:43:58 End of process
+
+2021:11:26 15:53:41 server pid = 10931
+2021:11:26 15:53:41 Initialise server FTP program...
+2021:11:26 15:53:41 Socket created successfully and ready to accept connection from clients.
+2021:11:26 15:53:43 Client connected.
+2021:11:26 15:53:43 Client pid = 10942
+2021:11:26 15:53:47 pwd command received from client 10942
+2021:11:26 15:53:47 /home/russell/myftpd sent to the client 10942
+2021:11:26 15:56:06 pwd command received from client 10942
+2021:11:26 15:56:06 /home/russell/myftpd sent to the client 10942
+2021:11:26 15:56:14 pwd command received from client 10942
+2021:11:26 15:56:14 /home/russell/myftpd sent to the client 10942
+2021:11:26 15:56:18 End of process
+2021:11:26 15:56:18 SIGCHLD interrupted
+2021:11:26 15:57:51 Client connected.
+2021:11:26 15:57:51 Client pid = 12235
+2021:11:26 16:02:10 End of process
+2021:11:26 16:02:10 SIGCHLD interrupted
+2021:11:26 16:02:13 Client connected.
+2021:11:26 16:02:13 Client pid = 12605
+2021:11:26 16:04:00 End of process
+2021:11:26 16:04:00 SIGCHLD interrupted
+2021:11:26 16:04:14 Client connected.
+2021:11:26 16:04:14 Client pid = 12904
+2021:11:26 16:04:40 End of process
+2021:11:26 16:04:40 SIGCHLD interrupted
+2021:11:26 16:18:04 Client connected.
+2021:11:26 16:18:04 Client pid = 13730
+2021:11:26 16:18:06 pwd command received from client 13730
+2021:11:26 16:18:06 /home/russell/myftpd sent to the client 13730
+2021:11:26 16:18:11 /home/russell is the current directory, client 13730
+2021:11:26 16:18:18 pwd command received from client 13730
+2021:11:26 16:18:18 /home/russell sent to the client 13730
+2021:11:26 16:18:32 pwd command received from client 13730
+2021:11:26 16:18:32 /home/russell sent to the client 13730
+2021:11:26 16:18:34 End of process
+2021:11:26 16:18:34 SIGCHLD interrupted
+2021:11:26 16:21:31 Client connected.
+2021:11:26 16:21:31 Client pid = 14045
+2021:11:26 16:21:34 pwd command received from client 14045
+2021:11:26 16:21:34 /home/russell/myftpd sent to the client 14045
+2021:11:26 16:21:36 dir command received from client 14045
+2021:11:26 16:21:36 .git
+makefile
+protocol.o
+myftpd.c
+protocol.h
+myftpd.o
+myftp.c
+svr_access_log.txt
+myftp
+README.md
+.vscode
+myftp.o
+protocol.c
+testput.txt
+myftpd
+sent to the client 14045
+2021:11:26 16:22:40 End of process

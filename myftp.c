@@ -24,12 +24,15 @@
 int startClientProg(int argumentCount, char *argumentValue[]);
 int initClientProg(char *serverName, int *socketNum);
 void processCommands(int socketNum, char *input, char cmd[], char arg[]);
+void pwdCommand(int socketNum, char *input, int size);
+void dirCommand(int socketNum, char *input, int size);
 void lpwdCommand();
 void ldirCommand();
 void lcdCommand(char arg[]);
 void cdCommand(int socketNum, char cmd[], char arg[]);
 void putCommand(int serSocket, char cmd[], char param[]);
 void getCommand(int serSocket, char cmd[], char param[]);
+// end of function declaration
 
 // main begins here
 int main(int argc, char *argv[])
@@ -37,6 +40,7 @@ int main(int argc, char *argv[])
     startClientProg(argc, argv);
     return 0;
 }
+// end of main
 
 // functions implementation
 int startClientProg(int argumentCount, char *argumentValue[])
@@ -131,16 +135,24 @@ void processCommands(int socketNum, char *input, char cmd[], char arg[])
             exit(OK);
         }
 
+        if(strcmp(input, "pwd") == 0)
+        {
+            pwdCommand(socketNum, input, nr);
+        }
+
         if(strcmp(input, "lpwd") == 0)
         {
-            // lpwd function here
             lpwdCommand();
             return;
         }
 
+        if(strcmp(input, "dir") == 0)
+        {
+            dirCommand(socketNum, input, nr);
+        }
+
         if(strcmp(input, "ldir") == 0)
         {
-            // ldir function here
             ldirCommand();
             return;
         }
@@ -179,23 +191,16 @@ void processCommands(int socketNum, char *input, char cmd[], char arg[])
                 getCommand(socketNum, cmd, arg);
             }
         }
-
-        if((nw = writeContent(socketNum, input, nr)) < nr)
-        {
-            perror("Client Send Error");
-            exit(1);
-        }
-
-        if((nr = readContent(socketNum, input, MAX_BLOCK_SIZE)) <= 0)
-        {
-            perror("Client Receive Error");
-            exit(1);
-        }
-
         input[nr] = '\0';
-        printf("%s", input);
         printf("\n");
     }
+}
+
+void pwdCommand(int socketNum, char *input, int size)
+{
+    writeContent(socketNum, input, size);
+    readContent(socketNum, input, MAX_BLOCK_SIZE);
+    printf("%s", input);
 }
 
 void lpwdCommand()
@@ -210,6 +215,13 @@ void lpwdCommand()
     {
         printf("%s\n", cwd);
     }
+}
+
+void dirCommand(int socketNum, char *input, int size)
+{
+    writeContent(socketNum, input, size);
+    readContent(socketNum, input, MAX_BLOCK_SIZE);
+    printf("%s", input);
 }
 
 void ldirCommand()
