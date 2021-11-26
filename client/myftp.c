@@ -355,8 +355,8 @@ void putCommand(int serSocket, char cmd[], char param[])
 
         if (strcmp(fileStatus, FILE_NO_CONFLICT) == 0)
         {
-            FILE *uploadFile;
-            uploadFile = fopen(param, "r");
+            FILE *uploadFile = fopen(param, "r");
+
             if (uploadFile == NULL)
             {
                 printf("File error. Please try again.\n");
@@ -368,8 +368,8 @@ void putCommand(int serSocket, char cmd[], char param[])
                 bzero(uploadFileName, sizeof(uploadFileName));
             }
             printf("File %s uploaded successfully.\n", param);
-            writeContent(serSocket, EOF_MESSAGE, sizeof(EOF_MESSAGE));
             fclose(uploadFile);
+            writeContent(serSocket, EOF_MESSAGE, sizeof(EOF_MESSAGE));
         }
         else if (strcmp(fileStatus, FILE_ALREADY_EXIST) == 0)
         {
@@ -390,7 +390,7 @@ void getCommand(int serSocket, char cmd[], char param[])
 {
     char currentPath[MAX_BLOCK_SIZE] = {0};
     int similarName = 0;
-    getcwd(currentPath,sizeof(currentPath));
+    getcwd(currentPath, sizeof(currentPath));
 
     DIR *d;
     struct dirent *currtDir;

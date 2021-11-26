@@ -38551,3 +38551,20 @@ sent to the client 157751
 2021:11:27 00:14:08 Client pid = 165118
 2021:11:27 00:14:26 File  uploaded successfully to /root/ict374/assignment/assign2/myftpd/server, client 165118
 2021:11:27 00:14:26 End of process
+2021:11:27 00:37:59 server pid = 166085
+2021:11:27 00:37:59 Initialise server FTP program...
+2021:11:27 00:37:59 Socket created successfully and ready to accept connection from clients.
+2021:11:27 00:38:13 Client connected.
+2021:11:27 00:38:13 Client pid = 166112
+2021:11:27 00:38:30 File picture_76KB.jpeg uploaded successfully to /root/ict374/assignment/assign2/myftpd/server, client 166112
+2021:11:27 00:41:15 End of process
+2021:11:27 00:41:15 SIGCHLD interrupted
+2021:11:27 00:42:02 Client connected.
+2021:11:27 00:42:02 Client pid = 166444
+2021:11:27 00:42:18 File picture_76KB.jpeg uploaded successfully to /root/ict374/assignment/assign2/myftpd/server, client 166444
+2021:11:27 00:42:29 End of process
+2021:11:27 00:42:29 SIGCHLD interrupted
+2021:11:27 00:43:22 Client connected.
+2021:11:27 00:43:22 Client pid = 166759
+2021:11:27 00:43:35 File picture_76KB.jpeg uploaded successfully to /root/ict374/assignment/assign2/myftpd/server, client 166759
+2021:11:27 00:52:38 End of process
