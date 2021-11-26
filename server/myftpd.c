@@ -275,10 +275,11 @@ void dirCommand(int cliSocket)
             {
                 strcpy(fileNameInDir, currtDir->d_name);
                 strcat(fileList, fileNameInDir);
-                strcat(fileList, "\n");
+                strcat(fileList, " ");
             }
         }
     }
+    strcat(fileList,"\n");
     writeContent(cliSocket, fileList, strlen(fileList));
     closedir(d);
 

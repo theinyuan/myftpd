@@ -23,9 +23,10 @@
 // functions declarations
 int startClientProg(int argumentCount, char *argumentValue[]);
 int initClientProg(char *serverName, int *socketNum);
+void printMenu();
 void processCommands(int socketNum, char *input, char cmd[], char arg[]);
-void pwdCommand(int socketNum, char *input, int size);
-void dirCommand(int socketNum, char *input, int size);
+void pwdCommand(int socketNum, char *input);
+void dirCommand(int socketNum, char *input);
 void lpwdCommand();
 void ldirCommand();
 void lcdCommand(char arg[]);
@@ -70,7 +71,8 @@ int startClientProg(int argumentCount, char *argumentValue[])
         exit(socketStatus);
     }
 
-    while(1)
+    printMenu();
+    while (1)
     {
         printf("> ");
         processCommands(sd, userInput, command, argument);
@@ -114,98 +116,107 @@ int initClientProg(char *serverName, int *socketNum)
     return (OK);
 }
 
+void printMenu()
+{
+    printf("The following commands are available for usage :\n");
+    printf("pwd  - Display current directory of the server\n");
+    printf("lpwd - Display current directory of the client\n");
+    printf("dir  - Display filenames within current directory of the server\n");
+    printf("ldir - Display filenames within current directory of the client\n");
+    printf("cd  directory_pathname - Change current directory of the server\n");
+    printf("lcd directory_pathname - Change current directory of the client\n");
+    printf("get filename - Download file from the server to the client\n");
+    printf("put filename - Upload file from the client to the server.\n");
+    printf("help - Display this menu\n");
+    printf("quit - Terminate the ftp session.\n");
+}
+
 void processCommands(int socketNum, char *input, char cmd[], char arg[])
 {
     int nr, nw;
     fgets(input, MAX_BLOCK_SIZE, stdin);
     nr = strlen(input);
 
-    if(input[nr - 1] == '\n')
+    if (input[nr - 1] == '\n')
     {
         input[nr - 1] = '\0'; // stripping newline
         nr--;
     }
 
-    if(nr > 0)
+    if (nr > 0)
     {
-        if(strcmp(input, "quit") == 0)
+        if (strcmp(input, "quit") == 0)
         {
             close(socketNum);
             printf("You are now exiting the client. Goodbye!\n");
             exit(OK);
         }
-        else if(strcmp(input, "pwd") == 0)
+        else if (strcmp(input, "pwd") == 0)
         {
-            pwdCommand(socketNum, input, nr);
+            pwdCommand(socketNum, input);
         }
-        else if(strcmp(input, "lpwd") == 0)
+        else if (strcmp(input, "lpwd") == 0)
         {
             lpwdCommand();
-            return;
         }
-        else if(strcmp(input, "dir") == 0)
+        else if (strcmp(input, "dir") == 0)
         {
-            dirCommand(socketNum, input, nr);
+            dirCommand(socketNum, input);
         }
-        else if(strcmp(input, "ldir") == 0)
+        else if (strcmp(input, "ldir") == 0)
         {
             ldirCommand();
-            return;
         }
-        else if(strstr(input, " ") != NULL)
+        else if (strcmp(input, "help") == 0)
+        {
+            printMenu();
+        }
+        else if (strstr(input, " ") != NULL)
         {
             strcpy(cmd, strtok(input, " "));
-            // printf("%s\n", cmd); // printf to test and verify tokenizer to cmd[]
             strcpy(arg, strtok(NULL, "\0"));
-            // printf("%s\n", arg); // printf to test and verify tokenizer to arg[]
-
-            if(strcmp(cmd, "cd") == 0)
+            if (strcmp(cmd, "cd") == 0)
             {
                 cdCommand(socketNum, cmd, arg);
-                bzero(cmd, strlen(cmd));
             }
-            else if(strcmp(input, "lcd") == 0)
+            else if (strcmp(cmd, "lcd") == 0)
             {
-                // lcd function here
                 lcdCommand(arg);
-                return;
             }
-            else if(strcmp(cmd, "put") == 0)
+            else if (strcmp(cmd, "put") == 0)
             {
                 putCommand(socketNum, cmd, arg);
             }
-            else if(strcmp(cmd, "get") == 0)
+            else if (strcmp(cmd, "get") == 0)
             {
                 getCommand(socketNum, cmd, arg);
             }
             else
             {
                 printf("Invalid command\n");
-                return;
             }
         }
         else
         {
             printf("Invalid command\n");
-            return;
         }
-        input[nr] = '\0';
-        printf("\n");
     }
 }
 
-void pwdCommand(int socketNum, char *input, int size)
+void pwdCommand(int socketNum, char *input)
 {
-    writeContent(socketNum, input, size);
-    readContent(socketNum, input, MAX_BLOCK_SIZE);
-    printf("%s", input);
+    char buffer[MAX_BLOCK_SIZE] = {0};
+    writeContent(socketNum, input, sizeof(input));
+    readContent(socketNum, buffer, sizeof(buffer));
+    printf("Current server directory: %s\n", buffer);
+    bzero(buffer, sizeof(buffer));
 }
 
 void lpwdCommand()
 {
     char cwd[MAX_BLOCK_SIZE];
-    
-    if(getcwd(cwd, sizeof(cwd)) == NULL)
+
+    if (getcwd(cwd, sizeof(cwd)) == NULL)
     {
         perror("getcwd() error");
     }
@@ -213,20 +224,21 @@ void lpwdCommand()
     {
         printf("%s\n", cwd);
     }
+    bzero(cwd, sizeof(cwd));
 }
 
-void dirCommand(int socketNum, char *input, int size)
+void dirCommand(int socketNum, char *input)
 {
-    writeContent(socketNum, input, size);
-    readContent(socketNum, input, MAX_BLOCK_SIZE);
-    printf("%s", input);
+    char buffer[MAX_BLOCK_SIZE] = {0};
+    writeContent(socketNum, input, sizeof(input));
+    readContent(socketNum, buffer, sizeof(buffer));
+    printf("File(s) in server: %s", buffer);
+    bzero(buffer, sizeof(buffer));
 }
 
 void ldirCommand()
 {
     char cwd[MAX_BLOCK_SIZE];
-    char fileNameInDir[MAX_BLOCK_SIZE];
-    char fileList[MAX_BLOCK_SIZE];
     getcwd(cwd, sizeof(cwd));
 
     DIR *d;
@@ -239,13 +251,11 @@ void ldirCommand()
         {
             if (strcmp(currtDir->d_name, ".") != 0 && strcmp(currtDir->d_name, "..") != 0)
             {
-                strcpy(fileNameInDir, currtDir->d_name);
-                strcat(fileList, fileNameInDir);
-                strcat(fileList, "\n");
+                printf("%s ", currtDir->d_name);
             }
         }
     }
-    printf("%s\n", fileList);
+    printf("\n");
     closedir(d);
 }
 
@@ -259,20 +269,20 @@ void lcdCommand(char arg[])
         count = 1;
     }
 
-    if(count > 0)
+    if (count > 0)
     {
-        if(strcmp(arg, ".") == 0)
+        if (strcmp(arg, ".") == 0)
         {
             getcwd(currentDir, sizeof(currentDir));
         }
-        else if(strcmp(arg, "~") == 0)
+        else if (strcmp(arg, "~") == 0)
         {
             chdir(getenv("HOME"));
             getcwd(currentDir, sizeof(currentDir));
         }
         else
         {
-            if(chdir(arg) < 0)
+            if (chdir(arg) < 0)
             {
                 strcat(currentDir, "Directory not found!");
                 count = 2;
@@ -289,7 +299,7 @@ void lcdCommand(char arg[])
         getcwd(currentDir, sizeof(currentDir));
     }
 
-    if(count == 2)
+    if (count == 2)
     {
         printf("%s Directory not found\n", arg);
     }
@@ -299,10 +309,14 @@ void lcdCommand(char arg[])
     }
 }
 
-void cdCommand(int socketNum, char cmd[], char arg[])
+void cdCommand(int socketNum, char *cmd, char *arg)
 {
-    writeContent(socketNum, cmd, strlen(cmd));
-    writeContent(socketNum, arg, strlen(arg));
+    char buffer[MAX_BLOCK_SIZE] = {0};
+    writeContent(socketNum, cmd, sizeof(cmd));
+    writeContent(socketNum, arg, sizeof(arg));
+    readContent(socketNum, buffer, sizeof(buffer));
+    printf("Current server directory: %s\n", buffer);
+    bzero(buffer, sizeof(buffer));
 }
 
 void putCommand(int serSocket, char cmd[], char param[])
