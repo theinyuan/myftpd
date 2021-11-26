@@ -152,13 +152,7 @@ void processCommands(int socketNum, char *input, char cmd[], char arg[])
             ldirCommand();
             return;
         }
-        else
-        {
-            printf("Invalid command");
-            exit(1);
-        }
-        
-        if(strstr(input, " ") != NULL)
+        else if(strstr(input, " ") != NULL)
         {
             strcpy(cmd, strtok(input, " "));
             // printf("%s\n", cmd); // printf to test and verify tokenizer to cmd[]
@@ -186,9 +180,14 @@ void processCommands(int socketNum, char *input, char cmd[], char arg[])
             }
             else
             {
-                printf("Invalid command");
-                exit(1);
+                printf("Invalid command\n");
+                return;
             }
+        }
+        else
+        {
+            printf("Invalid command\n");
+            return;
         }
         input[nr] = '\0';
         printf("\n");
@@ -265,13 +264,11 @@ void lcdCommand(char arg[])
         if(strcmp(arg, ".") == 0)
         {
             getcwd(currentDir, sizeof(currentDir));
-            //printf("%s\n", currentDir);
         }
         else if(strcmp(arg, "~") == 0)
         {
             chdir(getenv("HOME"));
             getcwd(currentDir, sizeof(currentDir));
-            //printf("%s\n", currentDir);
         }
         else
         {
