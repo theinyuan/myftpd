@@ -134,27 +134,28 @@ void processCommands(int socketNum, char *input, char cmd[], char arg[])
             printf("You are now exiting the client. Goodbye!\n");
             exit(OK);
         }
-
-        if(strcmp(input, "pwd") == 0)
+        else if(strcmp(input, "pwd") == 0)
         {
             pwdCommand(socketNum, input, nr);
         }
-
-        if(strcmp(input, "lpwd") == 0)
+        else if(strcmp(input, "lpwd") == 0)
         {
             lpwdCommand();
             return;
         }
-
-        if(strcmp(input, "dir") == 0)
+        else if(strcmp(input, "dir") == 0)
         {
             dirCommand(socketNum, input, nr);
         }
-
-        if(strcmp(input, "ldir") == 0)
+        else if(strcmp(input, "ldir") == 0)
         {
             ldirCommand();
             return;
+        }
+        else
+        {
+            printf("Invalid command");
+            exit(1);
         }
         
         if(strstr(input, " ") != NULL)
@@ -164,31 +165,29 @@ void processCommands(int socketNum, char *input, char cmd[], char arg[])
             strcpy(arg, strtok(NULL, "\0"));
             // printf("%s\n", arg); // printf to test and verify tokenizer to arg[]
 
-            // cd command
             if(strcmp(cmd, "cd") == 0)
             {
                 cdCommand(socketNum, cmd, arg);
                 bzero(cmd, strlen(cmd));
             }
-
-            // lcd command
-            if(strcmp(input, "lcd") == 0)
+            else if(strcmp(input, "lcd") == 0)
             {
                 // lcd function here
                 lcdCommand(arg);
                 return;
             }
-            
-            // put filename command
-            if(strcmp(cmd, "put") == 0)
+            else if(strcmp(cmd, "put") == 0)
             {
                 putCommand(socketNum, cmd, arg);
             }
-            
-            // get filename command
-            if(strcmp(cmd, "get") == 0)
+            else if(strcmp(cmd, "get") == 0)
             {
                 getCommand(socketNum, cmd, arg);
+            }
+            else
+            {
+                printf("Invalid command");
+                exit(1);
             }
         }
         input[nr] = '\0';
