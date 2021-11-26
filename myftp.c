@@ -241,30 +241,53 @@ void ldirCommand()
 
 void lcdCommand(char arg[])
 {
-    char argument[MAX_BLOCK_SIZE];
     char currentDir[MAX_BLOCK_SIZE];
+    int count = 0;
 
-    if(strcmp(argument, ".") == 0)
+    if (strcmp(arg, "#") != 0)
     {
-        getcwd(currentDir, sizeof(currentDir));
-        printf("%s\n", currentDir);
+        count = 1;
     }
 
-    if(strcmp(argument, "~") == 0)
+    if(count > 0)
     {
-        chdir(getenv("HOME"));
-        getcwd(currentDir, sizeof(currentDir));
-        printf("%s", currentDir);
-    }
-
-    if(chdir(argument) < 0)
-    {
-        strcat(currentDir, "Directory not found!");
+        if(strcmp(arg, ".") == 0)
+        {
+            getcwd(currentDir, sizeof(currentDir));
+            //printf("%s\n", currentDir);
+        }
+        else if(strcmp(arg, "~") == 0)
+        {
+            chdir(getenv("HOME"));
+            getcwd(currentDir, sizeof(currentDir));
+            //printf("%s\n", currentDir);
+        }
+        else
+        {
+            if(chdir(arg) < 0)
+            {
+                strcat(currentDir, "Directory not found!");
+                count = 2;
+            }
+            else
+            {
+                getcwd(currentDir, sizeof(currentDir));
+            } //
+        }
     }
     else
     {
+        chdir(getenv("HOME"));
         getcwd(currentDir, sizeof(currentDir));
-        printf("%s", currentDir);
+    }
+
+    if(count == 2)
+    {
+        printf("%s Directory not found\n", arg);
+    }
+    else
+    {
+        printf("%s\n", currentDir);
     }
 }
 
