@@ -279,7 +279,7 @@ void dirCommand(int cliSocket)
             }
         }
     }
-    strcat(fileList,"\n");
+    strcat(fileList, "\n");
     writeContent(cliSocket, fileList, strlen(fileList));
     closedir(d);
 
@@ -380,7 +380,7 @@ void getCommand(int cliSocket)
     if (fileFound > 0)
     {
         writeContent(cliSocket, FILE_FOUND, strlen(FILE_FOUND));
-        char fileInServer[1000] = {0};
+        char fileInServer[MAX_BLOCK_SIZE] = {0};
         FILE *outputFile;
         outputFile = fopen(downloadFileName, "r");
         if (outputFile == NULL)
@@ -389,7 +389,7 @@ void getCommand(int cliSocket)
         }
         else
         {
-            while ((fread(fileInServer, sizeof(char), sizeof(outputFile), outputFile)) > 0)
+            while ((fread(fileInServer, sizeof(char), sizeof(fileInServer), outputFile)) > 0)
             {
                 writeContent(cliSocket, fileInServer, strlen(fileInServer));
                 bzero(fileInServer, sizeof(fileInServer));
@@ -399,6 +399,7 @@ void getCommand(int cliSocket)
         fclose(outputFile);
         fprintf(svrAccessLog, "%s File %s sent to client %d successfully.\n", getTime, downloadFileName, getpid());
         fflush(svrAccessLog);
+        bzero(downloadFileName, sizeof(downloadFileName));
     }
     else
     {
@@ -462,11 +463,11 @@ void putCommand(int cliSocket)
             bzero(newFileInServer, sizeof(newFileInServer));
             readContent(cliSocket, newFileInServer, sizeof(newFileInServer));
         }
+        bzero(newFileInServer, sizeof(newFileInServer));
         fclose(inputFile);
         fprintf(svrAccessLog, "%s File %s uploaded successfully to %s, client %d\n", putTime, uploadFileName, currentPath, getpid());
         fflush(svrAccessLog);
         bzero(uploadFileName, sizeof(uploadFileName));
-        bzero(newFileInServer, sizeof(newFileInServer));
     }
     else
     {

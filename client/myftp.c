@@ -390,6 +390,7 @@ void getCommand(int serSocket, char cmd[], char param[])
 {
     char currentPath[MAX_BLOCK_SIZE] = {0};
     int similarName = 0;
+    getcwd(currentPath,sizeof(currentPath));
 
     DIR *d;
     struct dirent *currtDir;
