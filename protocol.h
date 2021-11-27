@@ -10,6 +10,7 @@
 
 #define EXCEEDED_ALLOWED_SIZE 2
 
+#define cdWithNoParam "#" //indicator where user only input cd
 #define EOF_MESSAGE "602218" //opcode in 6 byte representing end of file
 #define FILE_ERROR "2"
 

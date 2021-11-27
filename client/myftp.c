@@ -18,7 +18,7 @@
 #include <netdb.h>
 #include <unistd.h>
 
-#include "protocol.h"
+#include "../protocol.h"
 
 // functions declarations
 int startClientProg(int argumentCount, char *argumentValue[]);
@@ -170,6 +170,14 @@ void processCommands(int socketNum, char *input, char cmd[], char arg[])
         else if (strcmp(input, "help") == 0)
         {
             printMenu();
+        }
+        else if (strcmp(input, "cd") == 0)
+        {
+            cdCommand(socketNum, input, cdWithNoParam);
+        }
+        else if (strcmp(input, "lcd") == 0)
+        {
+            lcdCommand(cdWithNoParam);
         }
         else if (strstr(input, " ") != NULL)
         {

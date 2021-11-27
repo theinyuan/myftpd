@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "protocol.h" //readContent,writeContent
+#include "../protocol.h" //readContent,writeContent
 
 void claim_children();
 int daemon_init();
