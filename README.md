@@ -12,5 +12,6 @@
 - opcode 0 is used to allow the client to download or upload file
 - opcode 1 is used to deny the client to download or upload file
 - opcode 2 is used to represent any unexcepted error while download or upload file
+- opcode # is used to send an indicator to the server/client for cd/lcd command that no param is inputted
 
 #by Russell and TY from Murdoch Singapore
