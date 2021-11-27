@@ -321,7 +321,7 @@ void cdCommand(int socketNum, char *cmd, char *arg)
 {
     char buffer[MAX_BLOCK_SIZE] = {0};
     writeContent(socketNum, cmd, sizeof(cmd));
-    writeContent(socketNum, arg, sizeof(arg));
+    writeContent(socketNum, arg, strlen(arg));
     readContent(socketNum, buffer, sizeof(buffer));
     printf("Current server directory: %s\n", buffer);
     bzero(buffer, sizeof(buffer));
@@ -440,11 +440,11 @@ void getCommand(int serSocket, char cmd[], char param[])
             {
                 while (strcmp(downloadFileName, EOF_MESSAGE) != 0)
                 {
-                    fwrite(downloadFileName, sizeof(char), sizeof(downloadFileName), downloadFile);
+                    fwrite(downloadFileName, sizeof(char), strlen(downloadFileName), downloadFile);
                     bzero(downloadFileName, sizeof(downloadFileName));
                     readContent(serSocket, downloadFileName, sizeof(downloadFileName));
                 }
-                printf("File %s downloaded successfully.\n", downloadFileName);
+                printf("File downloaded successfully.\n");
                 bzero(downloadFileName, sizeof(downloadFileName));
             }
             fclose(downloadFile);
